@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Consultation Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg,rgb(189, 210, 248) 0%,rgb(197, 204, 240) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .consultation-card {
+            background: linear-gradient(120deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(253, 160, 133, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .consultation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7af);
+            background-size: 200% 100%;
+            animation: gradientMove 5s ease infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .doctor-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .doctor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .doctor-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .consultation-date {
+            background: linear-gradient(135deg, #4ecdc4, #45b7af);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .detail-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4ecdc4;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .detail-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.2);
+        }
+
+        .detail-label {
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #212529;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .summary-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        .summary-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .prescription-list {
+            list-style: none;
+        }
+
+        .prescription-item {
+            padding: 10px;
+            border-left: 3px solid #4CAF50;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .vital-signs,
+        .vital-item,
+        .vital-value {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Add new styles */
+        .insights-section {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .insight-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .insight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #4ecdc4, #45b7af);
+            opacity: 0.8;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .insight-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .insight-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, #4ecdc4, #45b7af);
+            color: white;
+            box-shadow: 0 4px 10px rgba(78, 205, 196, 0.2);
+        }
+
+        .insight-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .insight-content {
+            color: #666;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .insight-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            background: linear-gradient(135deg, #4ecdc4, #45b7af);
+            color: white;
+            box-shadow: 0 4px 10px rgba(78, 205, 196, 0.2);
+        }
+
+        .trend-icon {
+            font-size: 1.1em;
+        }
+
+        .knowledge-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+            padding: 10px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .knowledge-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .knowledge-item {
+            flex: 0 0 220px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 200px;
+        }
+
+        .knowledge-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(255,255,255,0.2) 0%, 
+                rgba(255,255,255,0) 60%,
+                rgba(255,255,255,0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .knowledge-item:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .knowledge-item:hover::before {
+            opacity: 1;
+        }
+
+        .knowledge-icon {
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.4s ease;
+            margin-bottom: 10px;
+        }
+
+        .knowledge-item:hover .knowledge-icon {
+            transform: scale(1.1) rotate(10deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .knowledge-item h4 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .knowledge-item p {
+            font-size: 0.9em;
+            line-height: 1.4;
+            opacity: 0.95;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .knowledge-stats {
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9em;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+
+        .floating-stats {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .health-timeline {
+            position: relative;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 3px solid #4CAF50;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -11px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            box-shadow: 0 0 0 5px rgba(76, 175, 80, 0.2);
+        }
+
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .achievement-badge:hover {
+            transform: translateY(-3px);
+        }
+
+        .graph-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .graph-container {
+            position: relative;
+            min-height: 300px;
+        }
+
+        .graph-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .graph-tab {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .graph-tab.active {
+            background: linear-gradient(135deg, #4ecdc4, #45b7af);
+            color: white;
+        }
+
+        .graph-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.2);
+        }
+
+        /* Updated achievement styles */
+        .achievements-section {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+        }
+
+        .achievements-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 5px;
+            scrollbar-width: none;
+        }
+
+        .achievements-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .achievement-card {
+            flex: 0 0 180px;
+            height: 220px;
+            background-position: center;
+            background-size: cover;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .achievement-image {
+            height: 120px;
+            width: 100%;
+            background-position: center;
+            background-size: cover;
+            transition: all 0.4s ease;
+        }
+
+        .achievement-card:hover .achievement-image {
+            transform: scale(1.1);
+        }
+
+        .achievement-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.95));
+            padding: 12px;
+            flex-grow: 1;
+            transform: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .achievement-title {
+            font-size: 0.95em;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .achievement-progress {
+            height: 3px;
+            background: #f0f4f8;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #45b7af);
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        /* Add new schedule carousel styles */
+        .schedule-section {
+            position: relative;
+            margin: 40px 0;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .schedule-carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+        }
+
+        .schedule-item {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        .schedule-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .schedule-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                rgba(0, 0, 0, 0.85) 0%,
+                rgba(0, 0, 0, 0.6) 60%,
+                rgba(0, 0, 0, 0) 100%);
+            color: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .schedule-date {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .schedule-type {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 15px;
+            background: linear-gradient(to right,
+                rgba(0, 0, 0, 0.5) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0) 100%);
+            border-radius: 20px 0 0 0;
+            z-index: 5;
+        }
+
+        .carousel-controls-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 15px;
+            background: linear-gradient(to left,
+                rgba(0, 0, 0, 0.5) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0) 100%);
+            border-radius: 0 20px 0 0;
+            z-index: 5;
+        }
+
+        .carousel-btn {
+            position: relative;
+            top: auto;
+            right: auto;
+            transform: none;
+            background: linear-gradient(135deg, #4ecdc4, #45b7af);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: linear-gradient(135deg, #45b7af, #4ecdc4);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        .schedule-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .knowledge-grid {
+                overflow-x: auto;
+            }
+            
+            .knowledge-item {
+                flex: 0 0 200px;
+                min-height: 180px;
+            }
+        }
+
+        /* Add colors to knowledge items */
+        .knowledge-item:nth-child(1) {
+            background: linear-gradient(135deg, #FF6B6B, #EE5253);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
+        }
+
+        .knowledge-item:nth-child(2) {
+            background: linear-gradient(135deg, #4ECDC4, #45B7AF);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.2);
+        }
+
+        .knowledge-item:nth-child(3) {
+            background: linear-gradient(135deg, #A66CFF, #9C55FF);
+            box-shadow: 0 10px 20px rgba(166, 108, 255, 0.2);
+        }
+
+        .knowledge-item:nth-child(4) {
+            background: linear-gradient(135deg, #FFA502, #FF7F50);
+            box-shadow: 0 10px 20px rgba(255, 165, 2, 0.2);
+        }
+
+        /* Add section dividers */
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, rgba(0,0,0,0.05), rgba(0,0,0,0.1), rgba(0,0,0,0.05));
+            margin: 40px 0;
+            border-radius: 2px;
+        }
+
+        /* Add loading animation styles */
+        .graph-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .graph-loading.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4ECDC4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Simple Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.9));
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin-top: 40px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+
+        .footer-content {
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+    </style>
+
+    <!-- Add Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="consultation-card">
+            <div class="header">
+                <div class="doctor-info">
+                    <div class="doctor-avatar">
+                        DR
+                    </div>
+                    <div>
+                        <h2>Dr. Hayan Patel </h2>
+                        <p>Cardiologist</p>
+                    </div>
+                </div>
+                <div class="consultation-date">
+                    <div id="consultation-datetime"></div>
+                </div>
+            </div>
+
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Consultation ID</div>
+                    <div class="detail-value">11</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Type</div>
+                    <div class="detail-value">Regular Check-up</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">Completed</div>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <h3 class="summary-title">Consultation Summary</h3>
+                <p>Regular check-up completed. All general assessments were performed according to schedule.</p>
+                
+                <h3 class="summary-title">Follow-up Plan</h3>
+                <p>Schedule follow-up appointment in 3 months for routine check-up.</p>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="insights-section">
+                <h3 class="summary-title">Visit Insights</h3>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">📈</div>
+                            <h4 class="insight-title">Visit Pattern</h4>
+                        </div>
+                        <div class="insight-content">
+                            Regular visits maintained as per schedule. Excellent attendance record.
+                        </div>
+                        <div class="insight-stats">
+                            <div class="trend-indicator">
+                                <span class="trend-icon">↗</span>
+                                <span>On Track</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">🎯</div>
+                            <h4 class="insight-title">Progress Overview</h4>
+                        </div>
+                        <div class="insight-content">
+                            All scheduled check-ups completed on time. Maintaining good consultation routine.
+                        </div>
+                        <div class="insight-stats">
+                            <div class="trend-indicator">
+                                <span class="trend-icon">✓</span>
+                                <span>Consistent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insight-card">
+                        <div class="insight-header">
+                            <div class="insight-icon">⭐</div>
+                            <h4 class="insight-title">Attendance Status</h4>
+                        </div>
+                        <div class="insight-content">
+                            Follow-up attendance rate: 90% for the past year. Great commitment to regular check-ups.
+                        </div>
+                        <div class="insight-stats">
+                            <div class="trend-indicator">
+                                <span class="trend-icon">↗</span>
+                                <span>Excellent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="achievements-section">
+                <h3 class="summary-title">Your Achievements</h3>
+                <div class="achievements-grid">
+                    <div class="achievement-card">
+                        <div class="achievement-image" style="background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500');"></div>
+                        <div class="achievement-content">
+                            <div>
+                                <h4 class="achievement-title">Perfect Attendance</h4>
+                                <p class="achievement-desc">Never missed appointments</p>
+                            </div>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-image" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500');"></div>
+                        <div class="achievement-content">
+                            <div>
+                                <h4 class="achievement-title">Goal Achiever</h4>
+                                <p class="achievement-desc">8/10 goals completed</p>
+                            </div>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-image" style="background-image: url('https://images.unsplash.com/photo-1552581234-26160f608093?w=500');"></div>
+                        <div class="achievement-content">
+                            <div>
+                                <h4 class="achievement-title">Regular Check-ups</h4>
+                                <p class="achievement-desc">Consistent schedule</p>
+                            </div>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="achievement-card">
+                        <div class="achievement-image" style="background-image: url('https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500');"></div>
+                        <div class="achievement-content">
+                            <div>
+                                <h4 class="achievement-title">Top Performer</h4>
+                                <p class="achievement-desc">Excellence in all areas</p>
+                            </div>
+                            <div class="achievement-progress">
+                                <div class="progress-bar" style="width: 95%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <h3 class="summary-title">Visit Information Center</h3>
+            <div class="knowledge-grid">
+                <div class="knowledge-item">
+                    <div class="knowledge-icon">📊</div>
+                    <h4>Check-up Status</h4>
+                    <p>All scheduled visits completed successfully with excellent progress tracking</p>
+                    <div class="knowledge-stats">
+                        <div class="stat-item">
+                            <span>✓</span>
+                            <span>100% Complete</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knowledge-item">
+                    <div class="knowledge-icon">🎯</div>
+                    <h4>Goals & Milestones</h4>
+                    <p>Achieving health targets with consistent improvement</p>
+                    <div class="knowledge-stats">
+                        <div class="stat-item">
+                            <span>↗</span>
+                            <span>8/10 Goals Met</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knowledge-item">
+                    <div class="knowledge-icon">📅</div>
+                    <h4>Next Appointment</h4>
+                    <p>Stay on track with your upcoming scheduled visits</p>
+                    <div class="knowledge-stats">
+                        <div class="stat-item">
+                            <span>📍</span>
+                            <span>In 3 Months</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knowledge-item">
+                    <div class="knowledge-icon">💡</div>
+                    <h4>Health Tips</h4>
+                    <p>Personalized recommendations for better health management</p>
+                    <div class="knowledge-stats">
+                        <div class="stat-item">
+                            <span>✨</span>
+                            <span>Updated Weekly</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="schedule-section">
+                <div class="carousel-controls">
+                    <button class="carousel-btn prev-btn" onclick="moveSchedule(-1)">←</button>
+                </div>
+                <div class="carousel-controls-right">
+                    <button class="carousel-btn next-btn" onclick="moveSchedule(1)">→</button>
+                </div>
+                
+                <div class="schedule-carousel">
+                    <div class="schedule-item">
+                        <img src="https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=1600" class="schedule-image" alt="Morning Schedule">
+                        <div class="schedule-content">
+                            <div class="schedule-date">27 January 2025</div>
+                            <div class="schedule-type">Regular Check-up</div>
+                            <p>Available slot with Dr. Hayan Patel </p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-item">
+                        <img src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1600" class="schedule-image" alt="Afternoon Schedule">
+                        <div class="schedule-content">
+                            <div class="schedule-date">27 April 2025</div>
+                            <div class="schedule-type">Follow-up Visit</div>
+                            <p>Available slot with Dr. Hayan Patel</p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-item">
+                        <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600" class="schedule-image" alt="Evening Schedule">
+                        <div class="schedule-content">
+                            <div class="schedule-date">27 July 2025</div>
+                            <div class="schedule-type">Consultation</div>
+                            <p>Available slot with Dr. Hayan Patel</p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-item">
+                        <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=1600" class="schedule-image" alt="Morning Schedule">
+                        <div class="schedule-content">
+                            <div class="schedule-date">27 October 2025</div>
+                            <div class="schedule-type">General Check-up</div>
+                            <p>Available slot with Dr. Hayan Patel</p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-item">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1600" class="schedule-image" alt="Afternoon Schedule">
+                        <div class="schedule-content">
+                            <div class="schedule-date">27 January 2026</div>
+                            <div class="schedule-type">Follow-up Visit</div>
+                            <p>Available slot with Dr. Hayan Patel</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="schedule-indicators">
+                    <div class="indicator active"></div>
+                    <div class="indicator"></div>
+                    <div class="indicator"></div>
+                    <div class="indicator"></div>
+                    <div class="indicator"></div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="graph-section">
+                <h3 class="summary-title">Progress Tracking</h3>
+                <div class="graph-tabs">
+                    <button class="graph-tab active" onclick="updateGraph('overall')">Overall Progress</button>
+                    <button class="graph-tab" onclick="updateGraph('attendance')">Attendance</button>
+                    <button class="graph-tab" onclick="updateGraph('goals')">Goals Achievement</button>
+                </div>
+                <div class="graph-container">
+                    <div class="graph-loading">
+                        <div class="loading-spinner"></div>
+                        <span class="loading-text">Updating graph...</span>
+                    </div>
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <script>
+        // Set consultation date and time
+        function updateDateTime() {
+            const date = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric'
+            };
+            document.getElementById('consultation-datetime').textContent = 
+                date.toLocaleDateString('en-US', options);
+        }
+
+        // Initialize date and time
+        updateDateTime();
+
+        // Schedule follow-up function
+        function scheduleFollowup() {
+            alert('Redirecting to appointment scheduling...');
+            // Add actual scheduling functionality here
+        }
+
+        // Add animation to elements when they come into view
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.detail-item, .prescription-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            elements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'all 0.5s ease';
+                observer.observe(element);
+            });
+        }
+
+        // Add new function for insights animation
+        function initializeInsights() {
+            const insightCards = document.querySelectorAll('.insight-card');
+            insightCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(-20px)';
+                    card.style.transition = 'all 0.5s ease';
+                    requestAnimationFrame(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateX(0)';
+                    });
+                }, index * 200);
+            });
+        }
+
+        // Add new animation functions
+        function animateTimeline() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, index * 300);
+            });
+        }
+
+        function initializeProgressCircles() {
+            const circles = document.querySelectorAll('.progress-ring-circle');
+            circles.forEach(circle => {
+                const radius = circle.r.baseVal.value;
+                const circumference = radius * 2 * Math.PI;
+                circle.style.strokeDasharray = `${circumference} ${circumference}`;
+                circle.style.strokeDashoffset = circumference;
+            });
+        }
+
+        // Add graph initialization and update functions
+        let progressChart = null;
+
+        function initializeGraph() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Create different gradient fills for each type
+            const overallGradient = ctx.createLinearGradient(0, 0, 0, 300);
+            overallGradient.addColorStop(0, 'rgba(78, 205, 196, 0.3)');  // Teal
+            overallGradient.addColorStop(1, 'rgba(78, 205, 196, 0)');
+
+            const attendanceGradient = ctx.createLinearGradient(0, 0, 0, 300);
+            attendanceGradient.addColorStop(0, 'rgba(166, 108, 255, 0.3)');  // Purple
+            attendanceGradient.addColorStop(1, 'rgba(166, 108, 255, 0)');
+
+            const goalsGradient = ctx.createLinearGradient(0, 0, 0, 300);
+            goalsGradient.addColorStop(0, 'rgba(255, 107, 107, 0.3)');  // Coral
+            goalsGradient.addColorStop(1, 'rgba(255, 107, 107, 0)');
+
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Overall Progress',
+                        data: [65, 70, 75, 82, 88, 95],
+                        borderColor: '#4ECDC4',  // Teal
+                        backgroundColor: overallGradient,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#4ECDC4',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#4ECDC4',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#2c3e50',
+                            bodyColor: '#2c3e50',
+                            borderColor: '#4CAF50',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `Progress: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                display: true,
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Add this function to generate random but realistic data
+        function generateRandomData(baseValue, variance, trend) {
+            let data = [];
+            let currentValue = baseValue;
+            
+            for (let i = 0; i < 6; i++) {
+                // Add random variance
+                let randomChange = (Math.random() - 0.3) * variance;
+                // Add upward trend
+                let trendChange = trend * i;
+                
+                currentValue = Math.min(100, Math.max(0, currentValue + randomChange + trendChange));
+                data.push(Math.round(currentValue));
+            }
+            return data;
+        }
+
+        function updateGraph(type) {
+            // Update active tab
+            document.querySelectorAll('.graph-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Show loading animation
+            const loading = document.querySelector('.graph-loading');
+            loading.classList.add('active');
+
+            // Simulate loading delay
+            setTimeout(() => {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                
+                // Create gradients
+                const overallGradient = ctx.createLinearGradient(0, 0, 0, 300);
+                overallGradient.addColorStop(0, 'rgba(78, 205, 196, 0.3)');
+                overallGradient.addColorStop(1, 'rgba(78, 205, 196, 0)');
+
+                const attendanceGradient = ctx.createLinearGradient(0, 0, 0, 300);
+                attendanceGradient.addColorStop(0, 'rgba(166, 108, 255, 0.3)');
+                attendanceGradient.addColorStop(1, 'rgba(166, 108, 255, 0)');
+
+                const goalsGradient = ctx.createLinearGradient(0, 0, 0, 300);
+                goalsGradient.addColorStop(0, 'rgba(255, 107, 107, 0.3)');
+                goalsGradient.addColorStop(1, 'rgba(255, 107, 107, 0)');
+
+                // Generate random data based on type
+                let newData;
+                let colors = {};
+                switch(type) {
+                    case 'overall':
+                        // Start at 65, small variance, moderate upward trend
+                        newData = generateRandomData(65, 5, 2);
+                        colors = {
+                            border: '#4ECDC4',
+                            gradient: overallGradient
+                        };
+                        progressChart.data.datasets[0].label = 'Overall Progress';
+                        break;
+                    case 'attendance':
+                        // Start at 80, very small variance, slight upward trend
+                        newData = generateRandomData(80, 3, 1);
+                        colors = {
+                            border: '#A66CFF',
+                            gradient: attendanceGradient
+                        };
+                        progressChart.data.datasets[0].label = 'Attendance Rate';
+                        break;
+                    case 'goals':
+                        // Start at 60, medium variance, strong upward trend
+                        newData = generateRandomData(60, 8, 3);
+                        colors = {
+                            border: '#FF6B6B',
+                            gradient: goalsGradient
+                        };
+                        progressChart.data.datasets[0].label = 'Goals Achievement';
+                        break;
+                }
+
+                // Add animation effect
+                const animation = {
+                    x: {
+                        type: 'number',
+                        easing: 'easeInOutQuart',
+                        duration: 1000,
+                        from: 0,
+                        delay(ctx) {
+                            return ctx.dataIndex * 100;
+                        }
+                    },
+                    y: {
+                        type: 'number',
+                        easing: 'easeInOutQuart',
+                        duration: 1000,
+                        from: 0,
+                        delay(ctx) {
+                            return ctx.dataIndex * 100;
+                        }
+                    }
+                };
+
+                // Update the chart with new colors and data
+                progressChart.data.datasets[0].data = newData;
+                progressChart.data.datasets[0].borderColor = colors.border;
+                progressChart.data.datasets[0].backgroundColor = colors.gradient;
+                progressChart.data.datasets[0].pointBackgroundColor = colors.border;
+                progressChart.data.datasets[0].pointHoverBorderColor = colors.border;
+                
+                // Apply animation
+                progressChart.options.animation = animation;
+                progressChart.update();
+
+                // Hide loading animation
+                loading.classList.remove('active');
+            }, 800);
+        }
+
+        // Add this to your JavaScript
+        function animateAchievements() {
+            const cards = document.querySelectorAll('.achievement-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    requestAnimationFrame(() => {
+                        card.style.transition = 'all 0.5s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    });
+                }, index * 200);
+            });
+        }
+
+        // Update your initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            animateOnScroll();
+            initializeInsights();
+            initializeGraph();
+            animateAchievements();
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add new schedule carousel functions
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.schedule-item').length;
+        const carousel = document.querySelector('.schedule-carousel');
+        
+        function moveSchedule(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateSchedule();
+        }
+
+        function updateSchedule() {
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Auto-slide functionality
+        let autoSlideInterval = setInterval(() => moveSchedule(1), 5000);
+
+        // Pause auto-slide on hover
+        document.querySelector('.schedule-section').addEventListener('mouseenter', () => {
+            clearInterval(autoSlideInterval);
+        });
+
+        document.querySelector('.schedule-section').addEventListener('mouseleave', () => {
+            autoSlideInterval = setInterval(() => moveSchedule(1), 5000);
+        });
+
+        // Allow clicking indicators to jump to slides
+        document.querySelectorAll('.indicator').forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentSlide = index;
+                updateSchedule();
+            });
+        });
+    </script>
+</body>
+</html>

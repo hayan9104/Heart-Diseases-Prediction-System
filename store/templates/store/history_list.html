@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction System</title>
+    
+    <!-- Enhanced CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --transition-speed: 0.3s;
+        }
+
+.patient-table {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+    animation: slideIn 0.5s ease-out;
+}
+
+.patient-table thead th {
+    background: #1e2290;
+    color: white !important;
+    font-weight: 600;
+    border: none;
+    padding: 1rem;
+}
+
+.patient-table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.badge {
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    animation: pulse 2s infinite;
+}
+
+.btn {
+    border-radius: 20px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.btn-primary:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.btn-primary:hover:after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(40, 40);
+        opacity: 0;
+    }
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background-color: #f8f9fa;
+}
+
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.2),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+</style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Add back button -->
+        <div class="row mt-3 mb-3">
+            <div class="col-12">
+                <a href="javascript:history.back()" class="btn" style="background-color: #1e2276; color: white;">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-15 ms-sm-auto">
+                <div class="main-content" data-aos="fade-up">
+                    <div class="container mt-4">
+                        {% if debug_empty %}
+                        <div class="alert alert-warning">
+                            No patients found in database. This might indicate:
+                            <ul>
+                                <li>The database table is empty</li>
+                                <li>The table name doesn't match the model</li>
+                                <li>Database connection issues</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <h4>
+                        <i class="fas fa-file-medical me-2"></i>
+                          Patient Records
+                    </h4>
+                        <div class="patient-table" data-aos="fade-up">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Case No.</th>
+                                        <th>Appointment Date</th>
+                                        <th>Patient Name</th>
+                                        <th>Phone</th>
+                                        <th>Risk Score</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for patient in page_obj %}
+                                    <tr>
+                                        <td>{{ patient.case_no }}</td>
+                                        <td>{{ patient.appointment_date }}</td>
+                                        <td>{{ patient.patient_name }}</td>
+                                        <td>{{ patient.phone }}</td>
+                                        <td>
+                                            {% if patient.risk_score >= 6 %}
+                                                <span class="badge bg-danger">High</span>
+                                            {% elif patient.risk_score >= 4 %}
+                                                <span class="badge bg-warning">Medium</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Low</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'user_patientdetail' patient.case_no %}" class="btn btn-primary btn-sm" ">View Details</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No patients found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Enhanced Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // Enhanced animation script
+        document.querySelectorAll('.animated-number').forEach(element => {
+            const finalValue = parseInt(element.dataset.value);
+            let currentValue = 0;
+            const duration = 2000;
+            const steps = 60;
+            const increment = finalValue / steps;
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    element.textContent = finalValue;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.round(currentValue);
+                }
+            }, duration / steps);
+        });
+
+        // Initialize AOS with custom settings
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out'
+        });
+
+        // Add smooth hover effect to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+
+            button.addEventListener('mouseout', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Initialize DataTables
+        $(document).ready(function() {
+            $('#patientsTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                order: [[0, 'desc']],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search patients..."
+                }
+            });
+
+            // Add loading animation
+            $(document).on('click', '.btn-primary', function() {
+                $(this).prepend('<span class="spinner-border spinner-border-sm me-2"></span>');
+                setTimeout(() => {
+                    $(this).find('.spinner-border').remove();
+                }, 1000);
+            });
+
+            // Scroll to Top Button
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 100) {
+                    $('#scrollToTop').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                }
+            });
+
+            $('#scrollToTop').click(function() {
+                $('html, body').animate({scrollTop: 0}, 800);
+                return false;
+            });
+
+            // Add fade-in effect to table rows
+            $('.table tbody tr').each(function(index) {
+                $(this).css({
+                    'animation': `fadeIn 0.5s ease-out ${index * 0.1}s`,
+                    'opacity': '0'
+                }).animate({opacity: 1}, 500);
+            });
+
+            // Add hover effect to badges
+            $('.badge').hover(
+                function() {
+                    $(this).css('transform', 'scale(1.1)');
+                },
+                function() {
+                    $(this).css('transform', 'scale(1)');
+                }
+            );
+
+            // Add click ripple effect to buttons
+            $('.btn').on('click', function(e) {
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+                
+                let ripple = document.createElement('span');
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+
+            // Add smooth scroll behavior
+            $('html').css('scroll-behavior', 'smooth');
+
+            // Enhanced Table Row Click
+            $('#patientsTable tbody tr').click(function() {
+                $(this).addClass('shimmer');
+                setTimeout(() => {
+                    $(this).removeClass('shimmer');
+                    // Add your row click handling here
+                }, 500);
+            });
+        });
+
+        // Counter animation
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.round(current);
+                }
+            }, duration / steps);
+        });
+    </script>
+</body>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LDRP Medical Institute</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #212f80;      /* Lighter than previous #1a237e */
+            --secondary-blue: #2196f3;     /* Keeping this bright blue */
+            --accent-blue: #64b5f6;        /* Keeping this light blue */
+            --highlight-blue: #bbdefb;     /* Keeping this very light blue */
+            --light-gray: #e3f2fd;         /* Keeping this blue-tinted gray */
+            --dark-text: #283593;          /* Slightly lighter dark blue text */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Enhanced Navigation */
+        .navbar {
+            background: transparent;  /* Make navbar transparent */
+            color: white;
+            padding: 1rem 0;
+            position: absolute;  /* Position navbar over hero section */
+            width: 100%;
+            z-index: 10;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .navbar-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s;
+        }
+
+        .navbar-menu a:hover::after {
+            width: 80%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: left;
+            padding: 8rem 0 4rem 0;
+            position: relative;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(61, 72, 131, 0.45), rgba(59, 70, 125, 0.55)), 
+                url('https://media.licdn.com/dms/image/v2/C4E1BAQHinizzknOMWg/company-background_10000/company-background_10000/0/1583918159714?e=2147483647&v=beta&t=phhmSDAxz0EUCYd6FcDBd9Dkpv2gKYwAWm8aMsGON08');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffffff" fill-opacity="0.3" d="M0,128L48,144C96,160,192,192,288,186.7C384,181,480,139,576,133.3C672,128,768,160,864,176C960,192,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></svg>');
+            animation: wave 10s linear infinite;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Infographic Section */
+        .infographic {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .info-item {
+            padding: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .info-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-icon {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .info-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-label {
+            color: var(--dark-text);
+            font-size: 1.1rem;
+        }
+
+        /* Medical Cards */
+        .medical-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .medical-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .medical-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-blue), #0f4c75);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid #0e83cd;
+            text-decoration: none;
+        }
+        
+        .card-icon {
+            margin-right: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+            text-align: left;
+            background: #f9f9f9;
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-value small {
+            font-size: 1rem;
+            font-weight: normal;
+        }
+        
+        .card-detail {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .card-detail i {
+            margin-right: 0.5rem;
+        }
+        
+        .card-detail small {
+            display: block;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+        
+        /* Add smooth hover effects for mobile-friendly interaction */
+        .medical-card:active {
+            transform: scale(0.98);
+        }
+        
+/* Services Section - Complete CSS for all 6 cards */
+.services {
+    background-color: white;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.service-card {
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: white;
+    transition: transform 0.3s, background-image 0.3s;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+}
+
+/* Service Cards Backgrounds - Updated for all cards */
+#service-card1 {
+    background-image: linear-gradient(rgba(2, 70, 125, 0.8), rgba(2, 70, 125, 0.8)), 
+        url('https://img.freepik.com/free-photo/medical-banner-with-doctor-working-hospital_23-2149611193.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#service-card1:hover {
+    transform: scale(1.05);
+    background-image: linear-gradient(rgba(171, 207, 240, 0.6), rgba(171, 207, 240, 0.6)), 
+        url('https://img.freepik.com/free-photo/medical-banner-with-doctor-working-hospital_23-2149611193.jpg');
+}
+
+#service-card2 {
+    background-image: linear-gradient(rgba(2, 70, 125, 0.8), rgba(2, 70, 125, 0.8)), 
+        url('https://img.freepik.com/free-photo/young-handsome-physician-medical-robe-with-stethoscope_1303-17818.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#service-card2:hover {
+    transform: scale(1.05);
+    background-image: linear-gradient(rgba(171, 207, 240, 0.6), rgba(171, 207, 240, 0.6)), 
+        url('https://img.freepik.com/free-photo/young-handsome-physician-medical-robe-with-stethoscope_1303-17818.jpg');
+}
+
+#service-card3 {
+    background-image: linear-gradient(rgba(2, 70, 125, 0.8), rgba(2, 70, 125, 0.8)), 
+        url('https://img.freepik.com/free-photo/emergency-medical-service-team-wearing-protective-face-masks-while-transporting-infected-patient_637285-8449.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#service-card3:hover {
+    transform: scale(1.05);
+    background-image: linear-gradient(rgba(171, 207, 240, 0.6), rgba(171, 207, 240, 0.6)), 
+        url('https://img.freepik.com/free-photo/emergency-medical-service-team-wearing-protective-face-masks-while-transporting-infected-patient_637285-8449.jpg');
+}
+
+/* Service Cards 4-6 remain the same */
+#service-card4 {
+    background-image: linear-gradient(rgba(2, 70, 125, 0.8), rgba(2, 70, 125, 0.8)), 
+        url('https://img.freepik.com/free-photo/doctor-with-stethoscope-hands-hospital-background_1423-1.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#service-card4:hover {
+    transform: scale(1.05);
+    background-image: linear-gradient(rgba(171, 207, 240, 0.6), rgba(171, 207, 240, 0.6)), 
+        url('https://img.freepik.com/free-photo/doctor-with-stethoscope-hands-hospital-background_1423-1.jpg');
+}
+
+/* Update service card 5 and 6 styles */
+#service-card5 {
+    background-image: linear-gradient(rgba(2, 70, 125, 0.8), rgba(2, 70, 125, 0.8)), 
+        url('https://img.freepik.com/free-photo/medical-technology-laptop-with-medical-record_53876-97303.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#service-card5:hover {
+    transform: scale(1.05);
+    background-image: linear-gradient(rgba(171, 207, 240, 0.6), rgba(171, 207, 240, 0.6)), 
+        url('https://img.freepik.com/free-photo/medical-technology-laptop-with-medical-record_53876-97303.jpg');
+}
+
+#service-card6 {
+    background-image: linear-gradient(rgba(2, 70, 125, 0.8), rgba(2, 70, 125, 0.8)), 
+        url('https://img.freepik.com/free-photo/medical-banner-with-heart-rate-lines_23-2149611215.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#service-card6:hover {
+    transform: scale(1.05);
+    background-image: linear-gradient(rgba(171, 207, 240, 0.6), rgba(171, 207, 240, 0.6)), 
+        url('https://img.freepik.com/free-photo/medical-banner-with-heart-rate-lines_23-2149611215.jpg');
+}
+
+/* Update common styles for all service cards */
+.service-card i {
+    color: #fff;
+    margin-bottom: 1rem;
+    transition: color 0.3s;
+}
+
+.service-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+.service-card p {
+    color: #fff;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+/* Unified hover effects for all service cards */
+.service-card:hover {
+    transform: scale(1.05);
+}
+
+.service-card:hover i,
+.service-card:hover h3,
+.service-card:hover p {
+    color: #030303;
+}
+
+        /* About Section */
+        .about {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 3rem 0;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-content p {
+            font-size: 1rem;
+        }
+
+        /* Blog Section */
+.blog-section {
+    padding: 4rem 0;
+    background-color: white;
+}
+
+.section-title {
+    text-align: center;
+    color: var(--primary-blue);
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+}
+
+.blog-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.blog-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.blog-card:hover .blog-thumbnail {
+    transform: scale(1.1);
+}
+
+.blog-content {
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.blog-meta {
+    display: flex;
+    gap: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.blog-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.blog-card h3 {
+    color: var(--primary-blue);
+    margin-bottom: 1rem;
+}
+
+.blog-card p {
+    color: var(--dark-text);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Read More Button */
+.read-more-btn {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background-color: var(--secondary-blue);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.read-more-btn:hover {
+    background-color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+        /* Footer */
+        .footer {
+            background-color: #3f51b5;     /* Match new primary blue */
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Scroll Progress Indicator */
+        .scroll-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .main_btn{
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+          
+            
+        }
+
+        
+
+        .scroll-progress-bar {
+            height: 100%;
+            width: 0;
+            background: var(--secondary-blue);
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .logout-btn {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.25) !important;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <div class="navbar-menu">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#about">About</a>
+                
+            </div>
+            <div class="navbar-menu">
+                <a href="{% url 'user_adminpg' %}" class="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="container">
+            <h1 class="animate-slide-down">
+                <span class="text-gradient">LDRP Medical Institute</span>
+                <span class="subtitle">Transforming Lives Through Healthcare Excellence</span>
+            </h1>
+            <p class="animate-fade-in">Excellence in Healthcare: Advanced Technology, Expert Care</p>
+        </div>
+    </div>
+
+    <!-- Infographic Section -->
+    <div class="container">
+        <div class="infographic">
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-user-md fa-3x"></i>
+                </div>
+                <div class="info-number">50+</div>
+                <div class="info-label">Expert Doctors</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-hospital-user fa-3x"></i>
+                </div>
+                <div class="info-number">10,000+</div>
+                <div class="info-label">Patients Served</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-award fa-3x"></i>
+                </div>
+                <div class="info-number">25+</div>
+                <div class="info-label">Years of Excellence</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="fas fa-microscope fa-3x"></i>
+                </div>
+                <div class="info-number">100+</div>
+                <div class="info-label">Research Papers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Cards -->
+    <div class="container">
+        <div class="medical-cards">
+            <div class="medical-card" onclick="handleCardClick('cardiac')">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <a href="{% url 'user_page' %}?phone={{ request.GET.phone }}" class="main_btn">
+                        <h3 class="card-title" style="margin-left: 10px; padding: 5px 0;">Cardiac Health</h3>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-value">98<small>%</small></div>
+                    <div class="card-detail">
+                        <i class="fas fa-arrow-up"></i> Improved from last check
+                        <br>
+                        <small>Updated today at 9:30 AM</small>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="medical-card" onclick="handleCardClick('appointment')">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <a href="{% url 'fectors' %}" class="main_btn">
+                    <h3 class="card-title">Predictive Fectors</h3>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-value">Chatbot</div>
+                    <div class="card-detail">
+                       
+                        <br>
+                        <small>Chat with AI</small>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="medical-card" onclick="window.location.href='last-consultation.html';">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <a href="{% url 'last-consultation' %}" class="main_btn">
+                    <h3 class="card-title">Last Consultation</h3>
+                    </a>
+                </div>
+                <div class="card-content">
+                    <div class="card-value">Dec 15</div>
+                    <div class="card-detail">
+                        <i class="fas fa-comment"></i> Dr. Hayan Patel
+                        <br>
+                        <small>General Check-up</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Services Section -->
+    <div class="services" id="services">
+        <div class="container">
+            <h2>Our Medical Services</h2>
+            <div class="services-grid">
+                <div class="service-card" id="service-card1">
+                    <i class="fas fa-notes-medical fa-3x"></i>
+                    <h3>Diagnostic Services</h3>
+                    <p>Comprehensive medical testing and diagnostics</p>
+                </div>
+                <div class="service-card" id="service-card2">
+                    <i class="fas fa-user-md fa-3x"></i>
+                    <h3>Specialist Consultations</h3>
+                    <p>Expert medical advice from top professionals</p>
+                </div>
+                <div class="service-card" id="service-card3">
+                    <i class="fas fa-procedures fa-3x"></i>
+                    <h3>Emergency Care</h3>
+                    <p>24/7 emergency medical support</p>
+                </div>
+                <div class="service-card" id="service-card4" onclick="window.location.href='user_page.html';" style="cursor: pointer;">
+                    <i class="fas fa-heart fa-3x"></i>
+                    <h3>Cardiology Care</h3>
+                    <p>Advanced cardiac treatments and heart health services</p>
+                </div>
+                <div class="service-card" id="service-card5">
+                    <i class="fas fa-file-medical fa-3x"></i>
+                    <h3>Digital Records</h3>
+                    <p>Secure electronic health records and easy access to medical history</p>
+                </div>
+                <div class="service-card" id="service-card6">
+                    <i class="fas fa-heartbeat fa-3x"></i>
+                    <h3>Heart Risk Analysis</h3>
+                    <p>Advanced cardiac risk assessment and prevention strategies</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Section -->
+    <div class="container">
+        <div class="blog-section">
+            <h2 class="section-title">Medical Insights & Stories</h2>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://img.freepik.com/free-photo/cardiologist-examining-patient_23-2148981329.jpg" 
+                             alt="Cardiac Care" 
+                             class="blog-thumbnail">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Jan 15, 2024</span>
+                            <span><i class="fas fa-user-md"></i> Dr. Sarah Johnson</span>
+                        </div>
+                        <h3>Breakthrough in Cardiac Care</h3>
+                        <p>Our cardiac team recently implemented a new minimally invasive procedure that has shown remarkable results in patient recovery times...</p>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </article>
+    
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://img.freepik.com/free-photo/neurologist-checking-patient-brain-activity_23-2149355301.jpg" 
+                             alt="Neuroplasticity" 
+                             class="blog-thumbnail">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Jan 10, 2024</span>
+                            <span><i class="fas fa-user-md"></i> Dr. Michael Chen</span>
+                        </div>
+                        <h3>Understanding Neuroplasticity</h3>
+                        <p>Recent research at LDRP has unveiled fascinating insights into the brain's ability to adapt and rewire itself...</p>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </article>
+    
+                <article class="blog-card">
+                    <div class="blog-image">
+                        <img src="https://img.freepik.com/free-photo/scientist-working-laboratory_23-2148980224.jpg" 
+                             alt="Genetics" 
+                             class="blog-thumbnail">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="fas fa-calendar"></i> Jan 5, 2024</span>
+                            <span><i class="fas fa-user-md"></i> Dr. Emily Rodriguez</span>
+                        </div>
+                        <h3>Genetics in Modern Medicine</h3>
+                        <p>Our genetics department has made significant strides in personalized medicine approaches...</p>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- About Section -->
+    <div class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div>
+                    <h2>About LDRP Medical Institute</h2>
+                    <p>We are a leading medical research and healthcare provider dedicated to delivering exceptional patient care through innovative medical technologies and compassionate healthcare professionals.</p>
+                </div>
+                <div>
+                    <p>Our mission is to provide comprehensive, personalized healthcare solutions that address the unique needs of each patient, combining advanced medical research with empathetic care.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 LDRP Medical Institute. All Rights Reserved.</p>
+            <div>Contact: +1 (555) 123-4567 | info@ldrpmedical.com</div>
+        </div>
+    </footer>
+
+    <script>
+        // Define professional medical color palette
+        const medicalColors = {
+            primaryDarkBlue: '#1A237E',
+            secondaryLightBlue: '#64B5F6',
+            accentTeal: '#4DB6AC',
+            lightGray: '#F5F5F5',
+            darkText: '#212121',
+            darkYellow: '#FF8C00'
+        };
+    
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+    
+        // Animate info items with stagger and scale effect
+        document.querySelectorAll('.info-item').forEach((item, index) => {
+            ScrollTrigger.create({
+                trigger: item,
+                start: "top 80%",
+                onEnter: () => {
+                    gsap.from(item, {
+                        scale: 0.8,
+                        opacity: 0,
+                        duration: 0.8,
+                        delay: index * 0.2,
+                        ease: "back.out(1.7)"
+                    });
+                },
+                once: true
+            });
+        });
+    
+        // Enhanced service cards animation
+        gsap.from(".service-card", {
+            scrollTrigger: {
+                trigger: ".services-grid",
+                start: "top 80%"
+            },
+            y: 100,
+            opacity: 0,
+            duration: 1,
+            stagger: 0.3,
+            ease: "power3.out"
+        });
+    
+        // Blog cards reveal animation
+        gsap.utils.toArray('.blog-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                delay: i * 0.2,
+                ease: "power3.out"
+            });
+        });
+    
+        // Smooth scroll with professional easing
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    gsap.to(window, {
+                        duration: 1,
+                        scrollTo: {
+                            y: target,
+                            offsetY: 70
+                        },
+                        ease: "power3.inOut"
+                    });
+                }
+            });
+        });
+    
+        // Enhanced Scroll Progress Indicator with Gradient Animation
+        const createScrollIndicator = () => {
+            const progressContainer = document.createElement('div');
+            const progressBar = document.createElement('div');
+            
+            progressContainer.className = 'scroll-progress-container';
+            progressBar.className = 'scroll-progress-bar';
+            progressContainer.appendChild(progressBar);
+            document.body.appendChild(progressContainer);
+    
+            window.addEventListener('scroll', () => {
+                const scrollPercentage = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+                progressBar.style.width = ${scrollPercentage}%;
+            });
+        };
+    
+        // Initialize scroll indicator
+        createScrollIndicator();
+    
+        // Final event listeners and cleanup
+        window.addEventListener('resize', () => {
+            ScrollTrigger.refresh();
+        });
+    
+        console.log("Page scripts initialized successfully.");
+
+        // Enhanced modal system with better animations
+        function showModal(title, content) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>${title}</h2>
+                        <span class="close-button">&times;</span>
+                    </div>
+                    <div class="modal-body">${content}</div>
+                    <div class="modal-footer">
+                        <button class="modal-btn">Close</button>
+                    </div>
+                </div>
+            `;
+
+            // Append modal to the document
+            document.body.appendChild(modal);
+
+            // Close modal on button click or close icon click
+            const closeModal = () => {
+                modal.style.opacity = '0';
+                setTimeout(() => modal.remove(), 300); // Remove after fade-out
+            };
+            modal.querySelector('.close-button').addEventListener('click', closeModal);
+            modal.querySelector('.modal-btn').addEventListener('click', closeModal);
+
+            // Show modal with animation
+            gsap.to(modal, {
+                opacity: 1,
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        }
+
+        // Professional card hover effects
+        document.querySelectorAll('.medical-card').forEach(card => {
+            const icon = card.querySelector('.card-icon i');
+            const header = card.querySelector('.card-header');
+            const title = card.querySelector('.card-title');
+
+            // Mouse enter animation
+            card.addEventListener('mouseenter', () => {
+                
+                gsap.to(card, { y: -10, boxShadow: '0 15px 30px rgba(0,0,0,0.15)', duration: 0.3, ease: "power2.out" });
+                gsap.to(header, { backgroundColor: 'var(--secondary-blue)', duration: 0.3 });
+                gsap.to(title, { scale: 1.05, color: '#fff', duration: 0.3 });
+            });
+
+            // Mouse leave animation
+            card.addEventListener('mouseleave', () => {
+                gsap.to(icon, { rotation: 0, scale: 1, duration: 0.6, ease: "back.out(1.7)" });
+                gsap.to(card, { y: 0, boxShadow: '0 4px 6px rgba(0,0,0,0.1)', duration: 0.3, ease: "power2.in" });
+                gsap.to(header, { backgroundColor: 'var(--primary-blue)', duration: 0.3 });
+                gsap.to(title, { scale: 1, color: 'inherit', duration: 0.3 });
+            });
+        });
+
+        // Enhanced service cards animation
+        gsap.utils.toArray('.service-card').forEach((card, i) => {
+            ScrollTrigger.create({
+                trigger: card,
+                start: "top 80%",
+                onEnter: () => {
+                    gsap.from(card, {
+                        y: 50,
+                        opacity: 0,
+                        duration: 0.6,
+                        ease: "power2.out",
+                        delay: i * 0.2
+                    });
+                }
+            });
+        });
+
+        console.log("Enhanced animations and modal system initialized.");
+    </script>
+</body>
+</html>
+
+

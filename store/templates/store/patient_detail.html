@@ -1,0 +1,164 @@
+{% extends 'store/base3.html' %}
+
+<style>
+    .header {
+        background: linear-gradient(120deg, #1E3F66, #2E5984);
+        color: white;
+        padding: 20px;
+        border-radius: 8px 8px 0 0;
+    }
+</style>
+
+{% block content %}
+<div class="container mt-4">
+    {% if error %}
+        <div class="alert alert-danger">
+            {{ error }}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Patient Details - {{ patient.case_no }}</h3>
+            </div>
+            <div class="card-body">
+                <!-- Personal Information Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="border-bottom pb-2">Personal Information</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <tr>
+                                <th width="30%">Case Number:</th>
+                                <td>{{ patient.case_no }}</td>
+                            </tr>
+                            <tr>
+                                <th>Patient Name:</th>
+                                <td>{{ patient.patient_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Appointment Date:</th>
+                                <td>{{ patient.appointment_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Age:</th>
+                                <td>{{ patient.age }}</td>
+                            </tr>
+                            <tr>
+                                <th>Sex:</th>
+                                <td>{{ patient.sex }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <tr>
+                                <th width="30%">Phone:</th>
+                                <td>{{ patient.phone }}</td>
+                            </tr>
+                            <tr>
+                                <th>Address:</th>
+                                <td>{{ patient.address }}</td>
+                            </tr>
+                            <tr>
+                                <th>Risk Score:</th>
+                                <td>
+                                    {% if patient.risk_score >= 7 %}
+                                        <span class="badge bg-danger">High ({{ patient.risk_score }})</span>
+                                    {% elif patient.risk_score >= 4 %}
+                                        <span class="badge bg-warning">Medium ({{ patient.risk_score }})</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Low ({{ patient.risk_score }})</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Medical Information Section -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="border-bottom pb-2">Medical Information</h4>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <tr>
+                                <th width="30%">Blood Pressure:</th>
+                                <td>{{ patient.trestbps }} mm Hg</td>
+                            </tr>
+                            <tr>
+                                <th>Cholesterol:</th>
+                                <td>{{ patient.chol }} mg/dl</td>
+                            </tr>
+                            <tr>
+                                <th>Max Heart Rate:</th>
+                                <td>{{ patient.thalach }} bpm</td>
+                            </tr>
+                            <tr>
+                                <th>Fasting Blood Sugar:</th>
+                                <td>{{ patient.fbs }}</td>
+                            </tr>
+                            <tr>
+                                <th>Resting ECG:</th>
+                                <td>{{ patient.restecg }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-striped">
+                            <tr>
+                                <th width="30%">Chest Pain Type:</th>
+                                <td>{{ patient.cp }}</td>
+                            </tr>
+                            <tr>
+                                <th>Exercise Angina:</th>
+                                <td>{{ patient.exang }}</td>
+                            </tr>
+                            <tr>
+                                <th>ST Depression:</th>
+                                <td>{{ patient.oldpeak }}</td>
+                            </tr>
+                            <tr>
+                                <th>Slope:</th>
+                                <td>{{ patient.slope }}</td>
+                            </tr>
+                            <tr>
+                                <th>Number of Vessels:</th>
+                                <td>{{ patient.ca }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Diagnosis and Notes Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="border-bottom pb-2">Diagnosis and Notes</h4>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Diseases</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ patient.diseases|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Doctor's Notes</h5>
+                            </div>
+                            <div class="card-body">
+                                {{ patient.doctor_notes|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,518 @@
+<!-- user_adminpg.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: #f0f2f5;
+        }
+
+        .split-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .image-side {
+            flex: 1;
+            background: url('{% static "store/doctor-patient.jpg" %}') center/cover no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 54, 93, 0.95), rgba(44, 82, 130, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 50px;
+            color: white;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .image-text {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 1s forwards 0.5s;
+        }
+
+        .image-subtext {
+            font-size: 1.2em;
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 1s forwards 0.8s;
+            color: #e2e8f0;
+        }
+
+        .login-side {
+            flex: 1;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .main-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            animation: floatLogo 3s ease-in-out infinite;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a365d;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: none;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2c5282;
+            font-size: 20px;
+        }
+
+        .form-group input:focus {
+            background: #fff;
+            outline: none;
+            border-color: #2c5282;
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+        }
+
+        .otp-btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid #2c5282;
+            color: #2c5282;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .otp-btn:hover {
+            background: #2c5282;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 54, 93, 0.3);
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(26, 54, 93, 0.1), rgba(44, 82, 130, 0.1));
+            border-radius: 50%;
+        }
+
+        .shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            right: 10%;
+            animation: float 8s infinite;
+        }
+
+        .shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            bottom: 10%;
+            left: 10%;
+            animation: float 12s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(20px, -20px) rotate(180deg); }
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Add hover effect for buttons */
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+            transition: 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        @media (max-width: 968px) {
+            .split-container {
+                flex-direction: column;
+            }
+
+            .image-side {
+                height: 300px;
+            }
+
+            .image-text {
+                font-size: 2em;
+            }
+
+            .login-side {
+                padding: 40px 20px;
+            }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeIn 1s forwards 1s;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            transform: translateX(-30px);
+            opacity: 0;
+            animation: slideInFeature 0.5s forwards;
+        }
+
+        .feature-item:nth-child(1) { animation-delay: 1.0s; }
+        .feature-item:nth-child(2) { animation-delay: 1.2s; }
+        .feature-item:nth-child(3) { animation-delay: 1.4s; }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .feature-icon i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-text h3 {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .feature-text p {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        .decorative-circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+
+        .circle {
+            position: absolute;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .circle-1 {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation: float 8s infinite;
+        }
+
+        .circle-2 {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            right: 10%;
+            animation: float 12s infinite reverse;
+        }
+
+        @keyframes slideInFeature {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 54, 93, 0.2);
+        }
+
+        .back-button i {
+            margin-left: 8px;
+            font-size: 16px;
+        }
+
+        .back-button span {
+            font-weight: 500;
+        }
+
+        /* Add pulse animation for the icon */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .back-button:hover i {
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <div class="image-side">
+            <div class="image-overlay">
+                <div class="decorative-circles">
+                    <div class="circle circle-1"></div>
+                    <div class="circle circle-2"></div>
+                </div>
+                <div class="left-content">
+                    <h1 class="image-text">Welcome to LDRP</h1>
+                    <h3 >Institute of Medical and Research</h3>
+                    <p class="image-subtext">Your trusted partner in healthcare management</p>
+                    
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h3>Expert Healthcare</h3>
+                                <p>Access to qualified healthcare professionals 24/7</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-notes-medical"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h3>Digital Records</h3>
+                                <p>Secure access to your medical history and reports</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="feature-text">
+                                <h3>Heart Risk Analysis</h3>
+                                <p>Advanced AI-powered heart disease prediction system</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-side">
+            <a href="{% url 'firstpg' %}" class="back-button">
+                <span>Back</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            <div class="floating-shapes">
+                <div class="shape"></div>
+                <div class="shape"></div>
+            </div>
+
+            <div class="login-container">
+                <div class="logo-section">
+                    <img src="{% static 'store/heartcarelogo.png' %}" alt="Healthcare Logo" class="main-logo">
+                    <div class="logo-text">Patient Portal</div>
+                </div>
+
+                <form id="loginForm" action="{% url 'user_page' %}">
+                    <div class="form-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="text" id="phone" name="phone" placeholder="Enter your phone number" 
+                               required pattern="\d{10}" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="text" id="otp" placeholder="Enter OTP" required>
+                    </div>
+                    <button type="button" class="otp-btn" onclick="requestOTP()">
+                        <i class="fas fa-key"></i> Request OTP
+                    </button>
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login Securely
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle OTP Request
+        function requestOTP() {
+            const btn = document.querySelector('.otp-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> OTP Sent';
+                alert("A new OTP has been sent to your phone number.");
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-key"></i> Request OTP';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Handle Login Form Submission
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const otp = document.getElementById('otp').value;
+        
+            if (/^\d{10}$/.test(phone) && otp) {
+                window.location.href = `{% url 'userpg' %}?phone=${phone}`;
+            } else {
+                alert("Please enter a valid 10-digit phone number and OTP.");
+            }
+        });
+    </script>
+</body>
+</html>

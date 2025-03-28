@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Profile</title>
+    {% load static %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .split-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: flex 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section:hover {
+            flex: 1.2;
+        }
+
+        .patient-section {
+            background: linear-gradient(120deg, #E8F1F8, #FFFFFF); /* Light blue tone */
+        }
+
+        .doctor-section {
+            background: linear-gradient(120deg, #1E3F66, #2E5984); /* Darker blue tones */
+        }
+
+        .content {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            z-index: 2;
+        }
+
+        .profile {
+            text-decoration: none;
+            color: white;
+            display: block;
+            position: relative;
+        }
+
+        /* Circle styling */
+        .profile-image-wrapper {
+            width: 300px;
+            height: 300px;
+            background-color: #B8D1E5; /* Lighter blue tone for patient section */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -70px auto 1rem;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .doctor-section .profile-image-wrapper {
+            background: linear-gradient(120deg, #4A7AAC, #FFFFFF); /* Medium blue tone */
+        }
+
+        /* Adjusted image size and positioning */
+        .profile-image {
+            width: 220px; /* Adjusted size */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: contain;
+            transition: transform 0.4s ease;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            z-index: 2; /* Ensure image is above circle */
+        }
+
+        /* Hover effect: Images scale up, text stays visible */
+        .section:hover .profile-image {
+            transform: scale(1.2);
+        }
+
+        .section:hover .profile-name {
+            z-index: 3; /* Ensure text stays above image when hovering */
+        }
+
+        .section:hover .profile-image-wrapper {
+            z-index: 1; /* Prevent image hover from covering text */
+        }
+
+        /* Patient Portal text */
+        .patient-section .profile-name {
+            font-size: 2.5rem;
+            margin-top: 3rem; /* Move text lower to avoid overlap with the image */
+            color: #4a4a4a;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2; /* Ensure text is above the circle */
+        }
+
+        /* Doctor Portal text */
+        .doctor-section .profile-name {
+            font-size: 2.5rem;
+            margin-top: 3rem; /* Move text lower to avoid overlap with the image */
+            color: #ffffff;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2; /* Ensure text is above the circle */
+        }
+
+        .profile-description {
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Access button styles */
+        .access-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .patient-section .access-btn {
+            background: #2E5984; /* Changed to blue */
+            border: 2px solid #2E5984;
+            color: white;
+        }
+
+        .patient-section .access-btn:hover {
+            background: #1E3F66; /* Darker blue on hover */
+            border-color: #1E3F66;
+            transform: scale(1.1);
+        }
+
+        .doctor-section .access-btn {
+            background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+            border: 2px solid rgba(255, 255, 255, 0.2); /* Semi-transparent border */
+            color: white;
+        }
+
+        .doctor-section .access-btn:hover {
+            background: rgba(255, 255, 255, 0.25); /* Slightly less transparent on hover */
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .section:hover::before {
+            opacity: 1;
+        }
+
+        /* Back button styles */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #4a4a4a;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-btn::before {
+            content: '←';
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+<body>
+    <a href="javascript:history.back()" class="back-btn">Back</a>
+    <div class="split-container">
+        <!-- Patient Section -->
+        <div class="section patient-section">
+            <div class="content">
+                <a href="{% url 'user_adminpg' %}" class="profile">
+                    <div class="profile-image-wrapper">
+                        <img src="{% static 'store/user2.PNG' %}" alt="Patient" class="profile-image">
+                    </div>
+                    <div class="profile-name">Patient Portal</div>
+                    <div class="access-btn">Access Portal</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Doctor Section -->
+        <div class="section doctor-section">
+            <div class="content">
+                <a href="{% url 'adminpage' %}" class="profile">
+                    <div class="profile-image-wrapper">
+                        <img src="{% static 'store/doctor2.PNG' %}" alt="Doctor" class="profile-image">
+                    </div>
+                    <div class="profile-name">Doctor Portal</div>
+                    <div class="access-btn">Access Portal</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

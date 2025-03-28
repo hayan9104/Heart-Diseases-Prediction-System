@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartCare Pro - Medical Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(
+                135deg,
+                #233e79 40%,
+                #1e3372 100%
+            );
+            padding: 4rem 2rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at center,
+                rgba(255, 255, 255, 0.05) 0%,
+                transparent 70%
+            );
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(59, 130, 246, 0.1),
+                rgba(37, 99, 235, 0.1)
+            );
+            z-index: 1;
+        }
+
+        /* Enhanced mesh gradient with more vibrant effects */
+        .mesh-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.6;
+            background: 
+                radial-gradient(800px circle at 100% 100%, rgba(59, 130, 246, 0.15), transparent 40%),
+                radial-gradient(600px circle at 0% 0%, rgba(37, 99, 235, 0.1), transparent 40%),
+                radial-gradient(900px circle at 100% 0%, rgba(59, 130, 246, 0.12), transparent 50%),
+                radial-gradient(700px circle at 0% 100%, rgba(37, 99, 235, 0.15), transparent 40%),
+                radial-gradient(600px circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent 50%),
+                radial-gradient(1000px circle at 80% 50%, rgba(37, 99, 235, 0.1), transparent 50%);
+            z-index: 1;
+        }
+
+        /* Add subtle animated gradient */
+        .gradient-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.4;
+            background: 
+                linear-gradient(
+                    45deg,
+                    transparent,
+                    rgb(34, 68, 121) 45%,
+                    rgba(20, 50, 114, 0.837) 55%,
+                    transparent
+                );
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            z-index: 1;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Add subtle light beams */
+        .light-beams {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            background: 
+                linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.1) 50%, transparent 100%),
+                linear-gradient(45deg, transparent 0%, rgba(37, 99, 235, 0.1) 50%, transparent 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .title span {
+            color: #60a5fa;
+            text-shadow: 0 0 15px rgb(4, 40, 98);
+        }
+
+        .subtitle {
+            color: #ffffff;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .cta {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.95);
+            color: #000000;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            width: fit-content;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .cta:hover {
+            transform: translateY(-3px);
+            background: #ffffff;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.8),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .cta:hover::before {
+            left: 100%;
+            transition: 0.5s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+                box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 20px rgba(255, 255, 255, 0.15);
+            }
+            100% {
+                transform: translateY(0px);
+                box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .cta:hover {
+            animation: pulse 1.5s ease-in-out infinite;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .hero-images {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 1rem;
+            filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.15));
+        }
+
+        .image-container {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 250px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            transition: all 0.5s ease;
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+
+        .image-container.image-large {
+            height: 300px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            animation-delay: 0.2s;
+        }
+
+        /* Stagger small image animations */
+        .small-images .image-container:nth-child(1) {
+            animation-delay: 0.4s;
+        }
+        .small-images .image-container:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes cardFloat {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .image-container:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(59, 130, 246, 0.8);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.3),
+                        0 0 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.1);
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.95),
+                rgba(0, 0, 0, 0.2)
+            );
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+            border-top: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .image-container:hover .image-overlay {
+            transform: translateY(0);
+        }
+
+        /* Add pulsing glow effect */
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+            }
+            50% {
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+            }
+            100% {
+                box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+            }
+        }
+
+        .image-container {
+            animation: cardFloat 4s ease-in-out infinite, glowPulse 3s infinite;
+        }
+
+        .small-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Add floating blue particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.15);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        .particle:nth-child(1) { top: 20%; left: 20%; animation-delay: 0s; }
+        .particle:nth-child(2) { top: 60%; left: 80%; animation-delay: -5s; }
+        .particle:nth-child(3) { top: 40%; left: 40%; animation-delay: -2s; }
+        .particle:nth-child(4) { top: 80%; left: 60%; animation-delay: -7s; }
+        .particle:nth-child(5) { top: 30%; left: 70%; animation-delay: -4s; }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .get-started-btn {
+            padding: 12px 20px;
+            width: 140px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-2px);
+            background: #f8f8f8;
+            border-color: #d0d0d0;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            color: #000000;
+        }
+
+        .get-started-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="title">Advanced <span>Healthcare</span>Heart Diseases Prediction and Management System</h1>
+                    <p class="subtitle">Revolutionizing patient care with AI-powered heart prediction and intelligent management tools.</p>
+                    <button onclick="window.location.href='{% url 'firstpg' %}'" class="get-started-btn">Get Started</button>
+                </div>
+                <div class="hero-images">
+                    <div class="image-container image-large">
+                        <img src="https://images.unsplash.com/photo-1666214280557-f1b5022eb634?q=80&w=2070" alt="Doctor with Technology">
+                        <div class="image-overlay">Smart Healthcare Solutions</div>
+                    </div>
+                    <div class="small-images">
+                        <div class="image-container">
+                            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070" alt="Medical Data Analysis">
+                            <div class="image-overlay">AI-Powered Diagnostics</div>
+                        </div>
+                        <div class="image-container">
+                            <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2080" alt="Digital Healthcare">
+                            <div class="image-overlay">Advanced Patient Care</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

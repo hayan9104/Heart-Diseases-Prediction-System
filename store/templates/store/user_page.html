@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction System</title>
+    
+    <!-- Enhanced CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #2c3e50;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--accent-color) !important;
+            transition: transform var(--transition-speed);
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table tbody tr {
+            transition: background-color var(--transition-speed);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(231, 76, 60, 0.05);
+            cursor: pointer;
+        }
+
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .btn {
+            border-radius: 20px;
+            padding: 8px 20px;
+            transition: all var(--transition-speed);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .table-responsive {
+                border-radius: 10px;
+                overflow-x: auto;
+            }
+        }
+
+        /* New Advanced Styles */
+        .table tbody tr {
+            transform: scale(1);
+            transition: all 0.3s ease;
+        }
+        
+        .table tbody tr:hover {
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Shimmer Loading Effect */
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            background: var(--accent-color);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-icon-bg {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            top: -75px;
+            right: -75px;
+            opacity: 0.2;
+        }
+
+        .bg-gradient {
+            background: linear-gradient(45deg, #4e73df, #224abe);
+        }
+
+        .table thead th {
+            background: linear-gradient(45deg, #4e73df, #224abe);
+            color: white;
+            border: none;
+        }
+
+        .badge {
+            padding: 0.5em 1em;
+        }
+
+        /* Add these new styles */
+        .prediction-header {
+            background: linear-gradient(120deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            background: conic-gradient(from 0deg, #2c3e50 75%, #ecf0f1 0);
+        }
+
+        .progress-ring::before {
+            content: "75%";
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            position: absolute;
+        }
+
+        .health-metric {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .health-metric:hover {
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .animated-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Updated font styles */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #2c3e50;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+            font-weight: 500;
+        }
+
+        h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Enhanced table styles */
+        .patient-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .patient-table thead th {
+            background: linear-gradient(120deg, #2c3e50, #3498db);
+            color: white !important;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+        }
+
+        .patient-table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .health-card {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-image-wrapper {
+            height: 200px;
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .health-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .health-card:hover .health-image {
+            transform: scale(1.1);
+        }
+
+        .health-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+            background: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .health-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .health-card:hover::after {
+            opacity: 1;
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .health-card:hover .metric-icon {
+            transform: scale(1.1);
+        }
+
+        /* Ensure text remains black and visible */
+        .health-card h5,
+        .health-card .animated-number,
+        .health-card p {
+            color: #000000;
+        }
+
+        .prediction-header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .pulse-ring {
+            position: relative;
+        }
+
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .slide-in {
+            animation: slideIn 1s ease-out;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 1.5s ease-out;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+        }
+
+        .prediction-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item .animated-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .circular-progress {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-circle {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-path {
+            fill: none;
+            stroke: #4fd1c5;
+            stroke-width: 8;
+            stroke-dasharray: 565.48;
+            stroke-dashoffset: 141.37;
+            animation: progressAnimation 2s ease-out forwards;
+        }
+
+        .progress-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+
+        .percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .progress-waves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .progress-waves::before,
+        .progress-waves::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(79, 209, 197, 0.2);
+            animation: waves 3s infinite;
+        }
+
+        .progress-waves::after {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes progressAnimation {
+            from { stroke-dashoffset: 565.48; }
+            to { stroke-dashoffset: 141.37; }
+        }
+
+        @keyframes waves {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* Add floating particles effect */
+        .prediction-header::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(255,255,255,0.05) 100%);
+            animation: particleFloat 20s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+
+        /* Enhanced Video Card Thumbnails */
+        .thumbnail img {
+            transform: scale(1.01);
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover .thumbnail img {
+            transform: scale(1.1);
+        }
+
+        /* Research Section Styles */
+        .section-title {
+            color: #2c3e50;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4e73df, #224abe);
+            border-radius: 2px;
+        }
+
+        .research-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .research-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .research-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .research-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .research-card:hover .research-image img {
+            transform: scale(1.1);
+        }
+
+        .research-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(78, 115, 223, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+
+        .research-content {
+            padding: 1.5rem;
+        }
+
+        .research-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .research-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .research-content h5 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .research-content p {
+            color: #6c757d;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .research-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+        }
+
+        .research-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .research-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline-primary {
+            border-color: #4e73df;
+            color: #4e73df;
+        }
+
+        .btn-outline-primary:hover {
+            background: #4e73df;
+            color: white;
+        }
+
+        @media (max-width: 992px) {
+            .research-card {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Expert Profiles Section */
+        .experts-section {
+            padding: 2rem 0;
+        }
+
+        .experts-title {
+            color: #ffffff;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .experts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .expert-card {
+            background: #1a1c23;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .expert-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .expert-image {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .expert-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .expert-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(78, 115, 223, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .expert-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .expert-info h5 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .expert-info p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .research-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4e73df;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .experts-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .expert-image {
+                height: 250px;
+            }
+
+            .expert-info {
+                padding: 1.2rem;
+            }
+        }
+
+        /* Stats Row */
+        .simple-stats {
+            margin: 2rem 0;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .stat-divider {
+            width: 2px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .stat-label {
+                font-size: 0.9rem;
+            }
+        }
+
+        .video-tutorials {
+            padding: 2rem 0;
+        }
+
+        .video-card {
+            background: linear-gradient(145deg, #1a1c23 0%, #23252f 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            text-decoration: none;
+            display: block;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .thumbnail {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .thumbnail img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .video-card:hover .thumbnail img {
+            transform: scale(1.1);
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .play-button i {
+            color: #1a1c23;
+            font-size: 1.2rem;
+        }
+
+        .video-card:hover .play-button {
+            background: #4e73df;
+        }
+
+        .video-card:hover .play-button i {
+            color: white;
+        }
+
+        .video-info {
+            padding: 1.2rem;
+        }
+
+        .video-info h5 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .video-info p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .duration {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .duration::before {
+            content: '\f017';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .video-info h5 {
+                font-size: 1rem;
+            }
+        }
+
+        .schedule-section {
+            padding: 2rem 0;
+        }
+
+        .schedule-card {
+            background: linear-gradient(145deg, #1a1c23 0%, #23252f 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            height: 100%;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .schedule-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .schedule-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-icon {
+            font-size: 1.5rem;
+            color: #4e73df;
+        }
+
+        .schedule-header h5 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 2px solid rgba(78, 115, 223, 0.3);
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.4rem;
+            top: 0.3rem;
+            width: 0.8rem;
+            height: 0.8rem;
+            border-radius: 50%;
+            background: #4e73df;
+        }
+
+        .time {
+            display: block;
+            color: #4e73df;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-item p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-card {
+                padding: 1.5rem;
+            }
+
+            .timeline-item {
+                padding-left: 1.2rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .time {
+                font-size: 0.85rem;
+            }
+
+            .timeline-item p {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Footer Styles */
+        .footer-section {
+            background: linear-gradient(145deg, #1a1c23 0%, #23252f 100%);
+            padding: 4rem 0 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            margin-bottom: 2rem;
+        }
+
+        .footer-title {
+            color: #4e73df;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: #4e73df;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo i {
+            color: #4e73df;
+            font-size: 1.8rem;
+        }
+
+        .footer-logo span {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-list li {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .footer-list li i {
+            color: #4e73df;
+        }
+
+        .slogan-box {
+            background: rgba(78, 115, 223, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            position: relative;
+            border: 1px solid rgba(78, 115, 223, 0.2);
+        }
+
+        .slogan-box i {
+            color: #4e73df;
+            font-size: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .slogan-box .fa-quote-left {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+        }
+
+        .slogan-box .fa-quote-right {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+        }
+
+        .slogan {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-align: center;
+            margin: 1rem 0;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .copyright-bar {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copyright-bar p {
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #4e73df;
+        }
+
+        @media (max-width: 768px) {
+            .footer-section {
+                padding: 2rem 0 0 0;
+            }
+
+            .copyright-bar {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .slogan {
+                font-size: 1rem;
+            }
+        }
+
+        .enhanced-table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .table-header h5 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .enhanced-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .enhanced-table th {
+            background: #ffffff;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            white-space: nowrap;
+        }
+
+        .enhanced-table td {
+            padding: 15px 20px;
+            color: #2c3e50;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .enhanced-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .case-number {
+            font-weight: 600;
+            color: #4e73df;
+        }
+
+        .date-cell, .phone-cell {
+            display: flex;
+            align-items: center;
+            color: #6c757d;
+        }
+
+        .name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: #4e73df;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .risk-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .risk-badge.high {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .view-btn {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .view-btn:hover {
+            background: #2e59d9;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(78, 115, 223, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .enhanced-table {
+                font-size: 14px;
+            }
+
+            .enhanced-table td, 
+            .enhanced-table th {
+                padding: 12px 15px;
+            }
+
+            .avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+            }
+
+            .view-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        .section-divider {
+            margin: 40px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .divider-content {
+            background: white;
+            padding: 0 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .divider-content::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            right: -20px;
+            top: 50%;
+            height: 1px;
+            background: #e9ecef;
+            z-index: -1;
+        }
+
+        .divider-content i {
+            color: #4e73df;
+            font-size: 1.2rem;
+        }
+
+        .divider-content span {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Add more spacing around table container */
+        .enhanced-table-container {
+            margin: 30px 0 50px 0;
+        }
+
+        /* Add subtle background pattern */
+        .enhanced-table-container {
+            position: relative;
+            background: 
+                linear-gradient(135deg, #f8f9fa 25%, transparent 25%) -10px 0,
+                linear-gradient(225deg, #f8f9fa 25%, transparent 25%) -10px 0,
+                linear-gradient(315deg, #f8f9fa 25%, transparent 25%),
+                linear-gradient(45deg, #f8f9fa 25%, transparent 25%);
+            background-size: 20px 20px;
+            background-color: white;
+            padding: 2px;
+            border-radius: 12px;
+        }
+
+        .enhanced-table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            border-radius: 10px;
+            z-index: 0;
+        }
+
+        .table-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .section-divider {
+                margin: 30px 0;
+            }
+
+            .divider-content span {
+                font-size: 1rem;
+            }
+        }
+
+        .pro-table-section {
+            margin: 40px 0;
+            padding: 20px;
+            background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+        }
+
+        .pro-table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-top {
+            padding: 20px 25px;
+            background: linear-gradient(145deg,rgb(33, 43, 68) 0%, #3867d6 100%);
+        }
+
+        .table-top h4 {
+            color: white;
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .table-wrapper {
+            padding: 5px;
+        }
+
+        .pro-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pro-table th {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .pro-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            color: #2c3e50;
+        }
+
+        .pro-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.high {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .action-btn {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: #3867d6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(78, 115, 223, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .pro-table-section {
+                margin: 20px 0;
+                padding: 10px;
+            }
+
+            .table-top {
+                padding: 15px 20px;
+            }
+
+            .pro-table th,
+            .pro-table td {
+                padding: 12px 15px;
+            }
+
+            .action-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+
+        .read-more-link {
+            color: #4e73df;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 6px;
+            background: rgba(78, 115, 223, 0.1);
+        }
+
+        .read-more-link:hover {
+            background: rgba(78, 115, 223, 0.2);
+            color: #2e59d9;
+            transform: translateX(5px);
+        }
+
+        .read-more-link i {
+            transition: transform 0.3s ease;
+        }
+
+        .read-more-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Keep existing styles */
+        .research-card {
+            background: #ffffff;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 10px 20px rgba(78, 115, 223, 0.1);
+        }
+
+        .research-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .study-btn {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .study-btn:hover {
+            background: #2e59d9;
+            transform: translateX(5px);
+        }
+
+        .study-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .study-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .research-image {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .research-card:hover .image-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .research-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(78, 115, 223, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .study-btn {
+            background: #4e73df;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .study-btn:hover {
+            background: #2e59d9;
+            transform: translateX(5px);
+        }
+
+        .study-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .study-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        @media (max-width: 768px) {
+            .research-image {
+                height: 180px;
+            }
+        }
+
+        /* Update these styles for the back button */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(120deg, #1E3F66, #2E5984);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px);
+            background: linear-gradient(120deg, #2E5984, #1E3F66);  /* Reverse gradient on hover */
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(30, 63, 102, 0.3);  /* Enhanced shadow with theme color */
+        }
+
+        .back-button i {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .back-button {
+                top: 10px;
+                left: 10px;
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Add these styles */
+        .disease-container {
+            position: relative;
+            z-index: 1000; /* Higher z-index to ensure it's above other content */
+            background: linear-gradient(145deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 152, 219, 0.95) 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: -50px; /* Negative margin to overlap with header section */
+        }
+
+        .disease-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .disease-menu {
+            position: absolute;
+            min-width: 300px;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-top: 10px;
+            right: 0;
+            left: auto;
+            background: white;
+            z-index: 1001; /* Even higher z-index for the dropdown menu */
+        }
+
+        .prediction-header {
+            position: relative;
+            z-index: 999; /* Lower z-index than the disease container */
+            margin-top: 30px; /* Add some space for the overlap */
+        }
+
+        .disease-dropdown {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 25px;
+            font-weight: 500;
+            min-width: 200px;
+            text-align: left;
+        }
+
+        .disease-dropdown:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .dropdown-header {
+            color: #2c3e50;
+            font-weight: 600;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(78, 115, 223, 0.1);
+        }
+
+        .disease-name {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .disease-desc {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add this right after the opening body tag -->
+    <a href="javascript:history.back()" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </a>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-15 ms-sm-auto">
+                <div class="main-content" data-aos="fade-up">
+                    <div class="container mt-4">
+                        
+                        <!-- Professional Table Section -->
+                        <div class="pro-table-section">
+                            <div class="pro-table-container">
+                                <div class="table-top">
+                                    <h4>
+                                        <i class="fas fa-file-medical me-2"></i>
+                                        Patient Records
+                                    </h4>
+                                </div>
+                                <div class="table-wrapper">
+                                    <table class="pro-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Case No.</th>
+                                                <th>Appointment Date</th>
+                                                <th>Patient Name</th>
+                                                <th>Phone</th>
+                                                <th>Risk Score</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for patient in page_obj %}
+                                            <tr>
+                                                <td>{{ patient.case_no }}</td>
+                                                <td>{{ patient.appointment_date }}</td>
+                                                <td>{{ patient.patient_name }}</td>
+                                                <td>{{ patient.phone }}</td>
+                                                <td>
+                                                    {% if patient.risk_score >= 6 %}
+                                                        <span class="badge bg-danger">High</span>
+                                                    {% elif patient.risk_score >= 4 %}
+                                                        <span class="badge bg-warning">Medium</span>
+                                                    {% else %}
+                                                        <span class="badge bg-success">Low</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'user_patientdetail' patient.case_no %}" class="btn btn-primary btn-sm">View Details</a>
+                                                </td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">No patients found</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Diseases Section -->
+                        <div class="col-lg-12 mb-4">
+                            <div class="disease-container">
+                                <div class="disease-intro">
+                                    <h4 class="text-white mb-3">
+                                        <i class="fas fa-heart-pulse me-2"></i>
+                                        Explore Heart Disease Solutions
+                                    </h4>
+                                    <p class="text-white-50 mb-4">
+                                        Click anywhere in this section to discover comprehensive information about various heart conditions and their treatments.
+                                    </p>
+                                </div>
+                                <div class="dropdown disease-dropdown-container">
+                                    <button class="btn btn-primary dropdown-toggle disease-dropdown" type="button" id="diseaseDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="fas fa-heart-pulse me-2"></i>
+                                        Select Heart Condition
+                                    </button>
+                                    <ul class="dropdown-menu disease-menu" aria-labelledby="diseaseDropdown">
+                                        <li>
+                                            <h6 class="dropdown-header">Common Heart Conditions</h6>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'cad' %}">
+                                                <i class="fas fa-circle-dot me-2"></i>
+                                                <span class="disease-name">Coronary Artery Disease</span>
+                                                <span class="disease-desc">Blockage in heart arteries</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="">
+                                                <i class="fas fa-circle-dot me-2"></i>
+                                                <span class="disease-name">Heart Failure</span>
+                                                <span class="disease-desc">Weakened heart muscle</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'heart_arrhythmias' %}">
+                                                <i class="fas fa-circle-dot me-2"></i>
+                                                <span class="disease-name">Arrhythmia</span>
+                                                <span class="disease-desc">Irregular heartbeat</span>
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <h6 class="dropdown-header">Other Conditions</h6>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="">
+                                                <i class="fas fa-circle-dot me-2"></i>
+                                                <span class="disease-name">Valve Disease</span>
+                                                <span class="disease-desc">Problems with heart valves</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="">
+                                                <i class="fas fa-circle-dot me-2"></i>
+                                                <span class="disease-name">Cardiomyopathy</span>
+                                                <span class="disease-desc">Heart muscle disease</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'heart_arrhythmias' %}">
+                                                <i class="fas fa-circle-dot me-2"></i>
+                                                <span class="disease-name">Mayocardial</span>
+                                                <span class="disease-desc">Heart membrane inflammation</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <span>    .</span>
+
+                        <!-- Enhanced Header Section -->
+                        <div class="prediction-header" data-aos="fade-down">
+                            <div class="header-content">
+                                <div class="row align-items-center">
+                                    <!-- Left Side - Main Title -->
+                                    <div class="col-lg-6">
+                                        <div class="title-section" data-aos="fade-right">
+                                            <div class="logo-pulse">
+                                                <i class="fas fa-heartbeat"></i>
+                                            </div>
+                                            <h1 class="main-title">Heart Disease Prediction</h1>
+                                            <p class="subtitle">Powered by Advanced AI & Medical Expertise</p>
+                                            <!-- Stats Row -->
+                                            <div class="simple-stats" data-aos="fade-up">
+                                                <div class="stats-row">
+                                                    <div class="stat-item">
+                                                        <div class="stat-number">
+                                                            <span class="counter" data-target="98">0</span>%
+                                                        </div>
+                                                        <div class="stat-label">Accuracy Rate</div>
+                                                    </div>
+                                                    <div class="stat-divider"></div>
+                                                    <div class="stat-item">
+                                                        <div class="stat-number">
+                                                            <span class="counter" data-target="10000">0</span>+
+                                                        </div>
+                                                        <div class="stat-label">Patients Helped</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right Side - Expert Profiles -->
+                                    <div class="col-lg-6">
+                                        <div class="experts-section" data-aos="fade-left">
+                                            <h4 class="experts-title">Our Medical Experts</h4>
+                                            <div class="experts-grid">
+                                                <!-- Cardiologist Expert -->
+                                                <div class="expert-card" onclick="window.open('https://www.ahajournals.org/doi/10.1161/CIRCRESAHA.121.319726', '_blank')">
+                                                    <div class="expert-image">
+                                                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2" alt="Medical Expert">
+                                                        <div class="expert-badge">Chief Cardiologist</div>
+                                                    </div>
+                                                    <div class="expert-info">
+                                                        <h5>Dr. Sarah Wilson</h5>
+                                                        <p>20+ Years Experience</p>
+                                                        <div class="research-tag">
+                                                            <i class="fas fa-microscope"></i>
+                                                            Latest Research on Heart Disease Prevention
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- AI Specialist -->
+                                                <div class="expert-card" onclick="window.open('https://www.nejm.org/doi/full/10.1056/NEJMoa2114812', '_blank')">
+                                                    <div class="expert-image">
+                                                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d" alt="Medical Expert">
+                                                        <div class="expert-badge">AI Specialist</div>
+                                                    </div>
+                                                    <div class="expert-info">
+                                                        <h5>Dr. James Chen</h5>
+                                                        <p>AI Research Lead</p>
+                                                        <div class="research-tag">
+                                                            <i class="fas fa-microscope"></i>
+                                                            AI Applications in Cardiology
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Metrics Cards with Images -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                                <a href="https://www.heart.org/en/healthy-living/healthy-eating" target="_blank" class="text-decoration-none">
+                                    <div class="stat-card health-card">
+                                        <div class="card-image-wrapper">
+                                            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061" 
+                                                 alt="Healthy Diet" 
+                                                 class="card-img-top health-image">
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="metric-icon bg-success-subtle text-success">
+                                                <i class="fas fa-apple-whole"></i>
+                                            </div>
+                                            <h5 class="mt-3">Healthy Diet</h5>
+                                            <div class="animated-number" data-value="70">0</div>
+                                            <p class="text-muted mb-0">Recommended Foods</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                                <a href="https://www.cdc.gov/tobacco/quit_smoking/index.htm" target="_blank" class="text-decoration-none">
+                                    <div class="stat-card health-card">
+                                        <div class="card-image-wrapper">
+                                            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc" 
+                                                 alt="Quit Smoking" 
+                                                 class="card-img-top health-image">
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="metric-icon bg-danger-subtle text-danger">
+                                                <i class="fas fa-ban-smoking"></i>
+                                            </div>
+                                            <h5 class="mt-3">Quit Smoking</h5>
+                                            <div class="animated-number" data-value="90">0</div>
+                                            <p class="text-muted mb-0">Health Improvement</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                                <a href="https://www.heart.org/en/healthy-living/fitness/fitness-basics" target="_blank" class="text-decoration-none">
+                                    <div class="stat-card health-card">
+                                        <div class="card-image-wrapper">
+                                            <img src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c" 
+                                                 alt="Exercise" 
+                                                 class="card-img-top health-image">
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="metric-icon bg-primary-subtle text-primary">
+                                                <i class="fas fa-person-running"></i>
+                                            </div>
+                                            <h5 class="mt-3">Regular Exercise</h5>
+                                            <div class="animated-number" data-value="85">0</div>
+                                            <p class="text-muted mb-0">Activity Level</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                                <a href="https://www.heart.org/en/healthy-living/high-blood-pressure" target="_blank" class="text-decoration-none">
+                                    <div class="stat-card health-card">
+                                        <div class="card-image-wrapper">
+                                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b" 
+                                                 alt="Stress Management" 
+                                                 class="card-img-top health-image">
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="metric-icon bg-warning-subtle text-warning">
+                                                <i class="fas fa-spa"></i>
+                                            </div>
+                                            <h5 class="mt-3">Stress Management</h5>
+                                            <div class="animated-number" data-value="80">0</div>
+                                            <p class="text-muted mb-0">Mental Wellness</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Health Resource Video Cards with Enhanced Thumbnails -->
+                        <div class="row g-4 mb-5">
+                            <!-- Video cards (rest of the code remains the same) -->
+                        </div>
+
+                            <!-- Research & Evidence Blocks -->
+                            <div class="research-section mb-4">
+                                <h4 class="section-title mb-4">
+                                    <i class="fas fa-microscope me-2"></i>
+                                    Latest Research & Studies
+                                </h4>
+                                
+                                <div class="row g-4">
+                                    <!-- Research Block 1 -->
+                                    <div class="col-lg-6" data-aos="fade-up">
+                                        <div class="research-card">
+                                            <div class="research-image">
+                                                <div class="image-wrapper">
+                                                    <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69" 
+                                                         alt="Heart Research">
+                                                </div>
+                                                <div class="research-badge">
+                                                    <span>New Study</span>
+                                                </div>
+                                            </div>
+                                            <div class="research-content">
+                                                <div class="research-meta">
+                                                    <span><i class="fas fa-calendar-alt"></i> 2024</span>
+                                                    <span><i class="fas fa-users"></i> 1,500 Participants</span>
+                                                </div>
+                                                <h5>Impact of Regular Exercise on Heart Health</h5>
+                                                <p>Recent studies show that consistent moderate exercise can reduce heart disease risk by up to 50% over a 5-year period.</p>
+                                                <div class="research-footer">
+                                                    <button onclick="window.open('https://www.ahajournals.org/doi/10.1161/CIRCRESAHA.121.319726', '_blank')" class="study-btn">
+                                                        Read Full Study <i class="fas fa-arrow-right ms-1"></i>
+                                                    </button>
+                                                    <div class="research-stats">
+                                                        <span><i class="fas fa-chart-line"></i> 95% Confidence</span>
+                                                        <span><i class="fas fa-check-circle"></i> Peer Reviewed</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Research Block 2 -->
+                                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                                        <div class="research-card">
+                                            <div class="research-image">
+                                                <div class="image-wrapper">
+                                                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d" 
+                                                         alt="Diet Research">
+                                                </div>
+                                                <div class="research-badge">
+                                                    <span>Clinical Trial</span>
+                                                </div>
+                                            </div>
+                                            <div class="research-content">
+                                                <div class="research-meta">
+                                                    <span><i class="fas fa-calendar-alt"></i> 2024</span>
+                                                    <span><i class="fas fa-users"></i> 2,000 Participants</span>
+                                                </div>
+                                                <h5>Mediterranean Diet and Cardiovascular Health</h5>
+                                                <p>Clinical trials demonstrate significant reduction in cardiovascular events among participants following a Mediterranean diet pattern.</p>
+                                                <div class="research-footer">
+                                                    <button onclick="window.open('https://www.nejm.org/doi/full/10.1056/NEJMoa2114812', '_blank')" class="study-btn">
+                                                        Read Full Study <i class="fas fa-arrow-right ms-1"></i>
+                                                    </button>
+                                                    <div class="research-stats">
+                                                        <span><i class="fas fa-chart-line"></i> 92% Confidence</span>
+                                                        <span><i class="fas fa-check-circle"></i> Peer Reviewed</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Health Tutorial Videos -->
+                            <div class="video-tutorials mb-5">
+                                <h4 class="section-title mb-4">
+                                    <i class="fas fa-play-circle me-2"></i>
+                                    Health & Wellness Tutorials
+                                </h4>
+                                <div class="row g-4">
+                                    <!-- Exercise Tutorial -->
+                                    <div class="col-md-6 col-lg-3" data-aos="fade-up">
+                                        <a href="https://www.youtube.com/watch?v=tAUf7aajBWE" class="video-card" target="_blank">
+                                            <div class="thumbnail">
+                                                <img src="https://img.youtube.com/vi/tAUf7aajBWE/maxresdefault.jpg" alt="Exercise Tutorial">
+                                                <div class="play-button">
+                                                    <i class="fas fa-play"></i>
+                                                </div>
+                                            </div>
+                                            <div class="video-info">
+                                                <h5>Heart-Healthy Exercises</h5>
+                                                <p>15-minute cardio workout routine</p>
+                                                <span class="duration">15:00</span>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!-- Stress Management -->
+                                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                                        <a href="https://www.youtube.com/watch?v=c1Ndym-IsQg" class="video-card" target="_blank">
+                                            <div class="thumbnail">
+                                                <img src="https://img.youtube.com/vi/c1Ndym-IsQg/maxresdefault.jpg" alt="Stress Management">
+                                                <div class="play-button">
+                                                    <i class="fas fa-play"></i>
+                                                </div>
+                                            </div>
+                                            <div class="video-info">
+                                                <h5>Stress Relief Techniques</h5>
+                                                <p>Guided meditation & breathing</p>
+                                                <span class="duration">10:00</span>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!-- Healthy Diet -->
+                                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                                        <a href="https://www.youtube.com/watch?v=zJgHbifIx-Q" class="video-card" target="_blank">
+                                            <div class="thumbnail">
+                                                <img src="https://img.youtube.com/vi/zJgHbifIx-Q/maxresdefault.jpg" alt="Healthy Diet">
+                                                <div class="play-button">
+                                                    <i class="fas fa-play"></i>
+                                                </div>
+                                            </div>
+                                            <div class="video-info">
+                                                <h5>Heart-Healthy Diet Tips</h5>
+                                                <p>Nutritional guidance & meal prep</p>
+                                                <span class="duration">12:00</span>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <!-- Sleep Improvement -->
+                                    <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                                        <a href="https://www.youtube.com/watch?v=t0kACis_dJE" class="video-card" target="_blank">
+                                            <div class="thumbnail">
+                                                <img src="https://img.youtube.com/vi/t0kACis_dJE/maxresdefault.jpg" alt="Sleep Improvement">
+                                                <div class="play-button">
+                                                    <i class="fas fa-play"></i>
+                                                </div>
+                                            </div>
+                                            <div class="video-info">
+                                                <h5>Better Sleep Guide</h5>
+                                                <p>Evening routine for quality rest</p>
+                                                <span class="duration">8:00</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Daily Health Schedules -->
+                            <div class="schedule-section mb-5">
+                                <h4 class="section-title mb-4">
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    Daily Health Schedules
+                                </h4>
+                                <div class="row g-4">
+                                    <!-- Sleep Schedule -->
+                                    <div class="col-md-4" data-aos="fade-up">
+                                        <div class="schedule-card">
+                                            <div class="schedule-header">
+                                                <i class="fas fa-moon header-icon"></i>
+                                                <h5>Sleep Cycle Schedule</h5>
+                                            </div>
+                                            <div class="schedule-content">
+                                                <div class="timeline-item">
+                                                    <span class="time">10:00 PM</span>
+                                                    <p>Begin bedtime routine</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">10:30 PM</span>
+                                                    <p>Lights out, start sleep cycle</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">11:00 PM - 2:00 AM</span>
+                                                    <p>Deep sleep phase</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">2:00 AM - 5:00 AM</span>
+                                                    <p>REM sleep cycles</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">6:00 AM</span>
+                                                    <p>Natural wake cycle</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Heart-Healthy Diet Schedule -->
+                                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                                        <div class="schedule-card">
+                                            <div class="schedule-header">
+                                                <i class="fas fa-utensils header-icon"></i>
+                                                <h5>Heart-Healthy Meal Plan</h5>
+                                            </div>
+                                            <div class="schedule-content">
+                                                <div class="timeline-item">
+                                                    <span class="time">7:00 AM</span>
+                                                    <p>Oatmeal with berries & nuts</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">10:00 AM</span>
+                                                    <p>Greek yogurt & fruit snack</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">12:30 PM</span>
+                                                    <p>Grilled fish with vegetables</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">3:30 PM</span>
+                                                    <p>Mixed nuts & seeds snack</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">6:30 PM</span>
+                                                    <p>Lean protein with quinoa</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Exercise Schedule -->
+                                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                                        <div class="schedule-card">
+                                            <div class="schedule-header">
+                                                <i class="fas fa-heartbeat header-icon"></i>
+                                                <h5>Daily Exercise Routine</h5>
+                                            </div>
+                                            <div class="schedule-content">
+                                                <div class="timeline-item">
+                                                    <span class="time">7:30 AM</span>
+                                                    <p>Morning stretching (10 min)</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">8:00 AM</span>
+                                                    <p>Light cardio walk (20 min)</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">12:00 PM</span>
+                                                    <p>Lunch break walk (15 min)</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">5:00 PM</span>
+                                                    <p>Cardio exercise (30 min)</p>
+                                                </div>
+                                                <div class="timeline-item">
+                                                    <span class="time">8:00 PM</span>
+                                                    <p>Evening yoga (15 min)</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <script>
+        // Enhanced animation script
+        document.querySelectorAll('.animated-number').forEach(element => {
+            const finalValue = parseInt(element.dataset.value);
+            let currentValue = 0;
+            const duration = 2000;
+            const steps = 60;
+            const increment = finalValue / steps;
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    element.textContent = finalValue;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.round(currentValue);
+                }
+            }, duration / steps);
+        });
+
+        // Initialize AOS with custom settings
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out'
+        });
+
+        // Add smooth hover effect to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseover', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+            });
+
+            button.addEventListener('mouseout', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // Initialize DataTables
+        $(document).ready(function() {
+            $('#patientsTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                order: [[0, 'desc']],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search patients..."
+                }
+            });
+
+            // Add loading animation
+            $(document).on('click', '.btn-primary', function() {
+                $(this).prepend('<span class="spinner-border spinner-border-sm me-2"></span>');
+                setTimeout(() => {
+                    $(this).find('.spinner-border').remove();
+                }, 1000);
+            });
+
+            // Scroll to Top Button
+            $(window).scroll(function() {
+                if ($(this).scrollTop() > 100) {
+                    $('#scrollToTop').fadeIn();
+                } else {
+                    $('#scrollToTop').fadeOut();
+                }
+            });
+
+            $('#scrollToTop').click(function() {
+                $('html, body').animate({scrollTop: 0}, 800);
+                return false;
+            });
+
+            // Enhanced Button Click Animation
+            $('.btn').click(function(e) {
+                let x = e.pageX - $(this).offset().left;
+                let y = e.pageY - $(this).offset().top;
+                
+                let ripple = $("<span class='ripple'></span>");
+                ripple.css({
+                    left: x,
+                    top: y
+                });
+                
+                $(this).append(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+
+            // Success Toast Notification
+            function showToast(message, type = 'success') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    icon: type,
+                    title: message
+                });
+            }
+
+            // Example usage of toast
+           
+
+            // Enhanced Table Row Click
+            $('#patientsTable tbody tr').click(function() {
+                $(this).addClass('shimmer');
+                setTimeout(() => {
+                    $(this).removeClass('shimmer');
+                    // Add your row click handling here
+                }, 500);
+            });
+        });
+
+        // Counter animation
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.round(current);
+                }
+            }, duration / steps);
+        });
+
+        // Add click event listeners to expert cards
+        document.querySelectorAll('.expert-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const diseaseContainer = document.querySelector('.disease-container');
+            const dropdownButton = document.querySelector('.disease-dropdown');
+            const dropdownMenu = document.querySelector('.disease-menu');
+            const predictionHeader = document.querySelector('.prediction-header');
+
+            diseaseContainer.addEventListener('click', function(e) {
+                if (!dropdownMenu.classList.contains('show')) {
+                    dropdownButton.click();
+                    // Add a class to the prediction header when dropdown is shown
+                    predictionHeader.classList.add('dropdown-active');
+                }
+            });
+
+            // Handle dropdown show/hide
+            dropdownButton.addEventListener('show.bs.dropdown', function () {
+                predictionHeader.classList.add('dropdown-active');
+            });
+
+            dropdownButton.addEventListener('hide.bs.dropdown', function () {
+                predictionHeader.classList.remove('dropdown-active');
+            });
+
+            // Prevent dropdown from closing when clicking inside the menu
+            dropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+
+    <div class="toast-container"></div>
+    
+    <div class="fab" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <!-- About Us Column -->
+                <div class="col-md-4">
+                    <div class="footer-content">
+                        <h5 class="footer-title">About Us</h5>
+                        <div class="footer-logo">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>LDRP Healthcare</span>
+                        </div>
+                        <p class="footer-description">
+                            Pioneering the future of healthcare through advanced AI and medical expertise. 
+                            We're committed to providing innovative solutions for heart disease prevention and treatment.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Research Column -->
+                <div class="col-md-4">
+                    <div class="footer-content">
+                        <h5 class="footer-title">LDRP Medical Research</h5>
+                        <ul class="footer-list">
+                            <li><i class="fas fa-microscope"></i> AI-Powered Diagnostics</li>
+                            <li><i class="fas fa-chart-line"></i> Clinical Studies</li>
+                            <li><i class="fas fa-stethoscope"></i> Patient Care Innovation</li>
+                            <li><i class="fas fa-flask"></i> Medical Technology</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Slogan Column -->
+                <div class="col-md-4">
+                    <div class="footer-content">
+                        <h5 class="footer-title">Our Mission</h5>
+                        <div class="slogan-box">
+                            <i class="fas fa-quote-left"></i>
+                            <p class="slogan">
+                                "Transforming Hearts, Enriching Lives: Where Innovation Meets Care"
+                            </p>
+                            <i class="fas fa-quote-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright Bar -->
+            <div class="copyright-bar">
+                <p>© 2024 LDRP Healthcare. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

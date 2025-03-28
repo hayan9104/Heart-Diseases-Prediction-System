@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Myocardial Ischemia - Diagnosis & Treatment</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #e74c3c, #2c3e50);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            animation: gradientShift 10s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .diagnosis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .diagnosis-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .diagnosis-item.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .diagnosis-item:nth-child(2).animate {
+            transition-delay: 0.2s;
+        }
+
+        .diagnosis-item:nth-child(3).animate {
+            transition-delay: 0.4s;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .warning-box {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .warning-box.animate {
+            opacity: 1;
+            transform: translateY(0);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.005); }
+            100% { transform: scale(1); }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.card, .diagnosis-item, .warning-box').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="hero">
+        <h1>Understanding Myocardial Ischemia</h1>
+        <p>Your comprehensive guide to diagnosis, treatment, and recovery</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is Myocardial Ischemia?</h2>
+            <p>Myocardial ischemia occurs when blood flow to the heart is reduced, preventing it from receiving enough oxygen. This can damage your heart muscle and lead to heart attacks if left untreated.</p>
+        </div>
+
+        <div class="warning-box">
+            <h3>⚠️ Warning Signs</h3>
+            <p>Seek immediate medical attention if you experience:</p>
+            <ul>
+                <li>Chest pain (angina)</li>
+                <li>Pressure or tightness in your chest</li>
+                <li>Shortness of breath</li>
+                <li>Neck or jaw pain</li>
+                <li>Arm or shoulder pain</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Diagnosis Methods</h2>
+            <div class="diagnosis-grid">
+                <div class="diagnosis-item">
+                    <h3>Initial Tests</h3>
+                    <ul>
+                        <li>Electrocardiogram (ECG)</li>
+                        <li>Blood tests</li>
+                        <li>Chest X-ray</li>
+                        <li>Physical examination</li>
+                    </ul>
+                </div>
+                <div class="diagnosis-item">
+                    <h3>Advanced Diagnostics</h3>
+                    <ul>
+                        <li>Stress tests</li>
+                        <li>Coronary angiogram</li>
+                        <li>CT coronary angiogram</li>
+                        <li>Nuclear scan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Treatment Options</h2>
+            <div class="diagnosis-grid">
+                <div class="diagnosis-item">
+                    <h3>Medications</h3>
+                    <ul>
+                        <li>Aspirin</li>
+                        <li>Beta blockers</li>
+                        <li>Calcium channel blockers</li>
+                        <li>Nitrates</li>
+                        <li>Cholesterol-lowering drugs</li>
+                    </ul>
+                </div>
+                <div class="diagnosis-item">
+                    <h3>Medical Procedures</h3>
+                    <ul>
+                        <li>Angioplasty and stenting</li>
+                        <li>Coronary artery bypass surgery</li>
+                        <li>Enhanced external counterpulsation</li>
+                    </ul>
+                </div>
+                <div class="diagnosis-item">
+                    <h3>Lifestyle Changes</h3>
+                    <ul>
+                        <li>Quit smoking</li>
+                        <li>Regular exercise</li>
+                        <li>Heart-healthy diet</li>
+                        <li>Stress management</li>
+                        <li>Weight management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Prevention & Management</h2>
+            <div class="diagnosis-grid">
+                <div class="diagnosis-item">
+                    <h3>Risk Factor Control</h3>
+                    <ul>
+                        <li>Blood pressure monitoring</li>
+                        <li>Diabetes management</li>
+                        <li>Cholesterol control</li>
+                        <li>Regular check-ups</li>
+                    </ul>
+                </div>
+                <div class="diagnosis-item">
+                    <h3>Daily Habits</h3>
+                    <ul>
+                        <li>Mediterranean diet</li>
+                        <li>30 minutes daily exercise</li>
+                        <li>Adequate sleep</li>
+                        <li>Stress reduction techniques</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

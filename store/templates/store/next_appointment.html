@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Appointment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #b33b29;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #b33b29;
+        }
+
+        .appointment-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ffe6e6;
+            border-radius: 8px;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .appointment-details p {
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #b33b29;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #e63939;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: none;
+            padding: 10px 20px;
+            background-color: #b33b29;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #e63939;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #b33b29;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Next Appointment
+    </header>
+
+    <div class="container">
+        <h2>Your Upcoming Appointment</h2>
+        <p>Click the button below to view the details of your next appointment.</p>
+
+        <button id="toggleButton" onclick="showAppointmentDetails()">Next Appointment</button>
+
+        <div id="appointmentDetails" class="appointment-details">
+            <p><strong>Date:</strong> January 10, 2025</p>
+            <p><strong>Time:</strong> 10:30 AM</p>
+            <p><strong>Doctor:</strong> Dr. Jane Smith</p>
+        </div>
+
+        <a href="{% url 'user_page' %}" id="backButton" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <footer>
+        © 2024 Heart Disease Prediction System
+    </footer>
+
+    <script>
+        function showAppointmentDetails() {
+            const details = document.getElementById('appointmentDetails');
+            const toggleButton = document.getElementById('toggleButton');
+            const backButton = document.getElementById('backButton');
+
+            details.style.display = 'block';
+            toggleButton.style.display = 'none';
+            backButton.style.display = 'inline-block';
+        }
+    </script>
+</body>
+</html>

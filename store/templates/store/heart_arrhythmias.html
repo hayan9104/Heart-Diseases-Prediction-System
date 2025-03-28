@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Heart Arrhythmia - Symptoms & Solutions</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #ff6b6b, #556270);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            animation: gradientShift 10s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .solution-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .solution-item.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .solution-item:nth-child(2).animate {
+            transition-delay: 0.2s;
+        }
+
+        .solution-item:nth-child(3).animate {
+            transition-delay: 0.4s;
+        }
+
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+
+        .hero h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .emergency-box {
+            background: #ff6b6b;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .emergency-box.animate {
+            opacity: 1;
+            transform: translateY(0);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.005);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.card, .solution-item, .emergency-box').forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="hero">
+        <h1>Understanding Heart Arrhythmia</h1>
+        <p>Your comprehensive guide to heart rhythm disorders and solutions</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h2>What is Heart Arrhythmia?</h2>
+            <p>A heart arrhythmia is an irregular heartbeat where electrical signals that coordinate heart rhythms don't work properly. This can cause your heart to beat too fast, too slow, or irregularly.</p>
+        </div>
+
+        <div class="card">
+            <h2>Common Symptoms</h2>
+            <div class="solution-grid">
+                <div class="solution-item">
+                    <h3>Primary Symptoms</h3>
+                    <ul>
+                        <li>Fluttering in chest</li>
+                        <li>Racing heartbeat</li>
+                        <li>Slow heartbeat</li>
+                        <li>Chest pain</li>
+                        <li>Shortness of breath</li>
+                    </ul>
+                </div>
+                <div class="solution-item">
+                    <h3>Additional Signs</h3>
+                    <ul>
+                        <li>Anxiety</li>
+                        <li>Fatigue</li>
+                        <li>Lightheadedness</li>
+                        <li>Sweating</li>
+                        <li>Fainting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="emergency-box">
+            <h3>⚠️ When to Seek Emergency Care</h3>
+            <p>Call 911 immediately if you experience:</p>
+            <ul>
+                <li>Severe chest pain</li>
+                <li>Difficulty breathing</li>
+                <li>Fainting or severe dizziness</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Solutions & Treatment Options</h2>
+            <div class="solution-grid">
+                <div class="solution-item">
+                    <h3>Medical Treatments</h3>
+                    <ul>
+                        <li>Medications</li>
+                        <li>Cardioversion</li>
+                        <li>Catheter ablation</li>
+                        <li>Pacemaker implantation</li>
+                    </ul>
+                </div>
+                <div class="solution-item">
+                    <h3>Lifestyle Changes</h3>
+                    <ul>
+                        <li>Reduce stress</li>
+                        <li>Regular exercise</li>
+                        <li>Healthy diet</li>
+                        <li>Limit caffeine and alcohol</li>
+                        <li>Quit smoking</li>
+                    </ul>
+                </div>
+                <div class="solution-item">
+                    <h3>Prevention Tips</h3>
+                    <ul>
+                        <li>Maintain healthy blood pressure</li>
+                        <li>Get adequate sleep</li>
+                        <li>Regular check-ups</li>
+                        <li>Monitor heart rhythm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

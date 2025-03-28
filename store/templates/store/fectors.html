@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction Factors</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #2c3e50;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            animation: slideIn 1s ease-out;
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .factor {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            border: none;
+        }
+
+        .factor:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 1em;
+        }
+
+        .factor p {
+            color: #6c757d;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .learn-more-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            margin-top: 1.5em;
+            transition: all 0.2s ease;
+            gap: 5px;
+        }
+
+        .learn-more-btn:hover {
+            background: #3867d6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(78, 115, 223, 0.2);
+        }
+
+        footer {
+            background: linear-gradient(145deg, #1a1c23 0%, #23252f 100%);
+            padding: 4rem 0 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            margin-bottom: 2rem;
+        }
+
+        .footer-title {
+            color: #4e73df;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 2rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 1rem;
+                gap: 20px;
+            }
+
+            .factor {
+                padding: 1.5rem;
+            }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Chatbot Styles */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .chat-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 380px;
+            height: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .bot-message {
+            background: white;
+            border: 1px solid #e2e8f0;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background: #1a365d;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #1a365d;
+        }
+
+        .chat-input button {
+            background: #1a365d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background: #2c5282;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #1a365d;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Heart Disease Prediction Factors</h1>
+        <p>Understanding the key indicators of heart health</p>
+    </header>
+    
+    <div class="container">
+        <div class="factor">
+            <h2>1. Age</h2>
+            <p>Risk increases with age as blood vessels become less flexible and heart function changes. Regular check-ups become crucial for monitoring cardiovascular health in older adults.</p>
+        </div>
+        <div class="factor">
+            <h2>2. Gender</h2>
+            <p>Men face higher risks earlier in life. Women's risk increases after menopause due to reduced estrogen protection. Both genders need to maintain heart-healthy lifestyles.</p>
+        </div>
+        <div class="factor">
+            <h2>3. Chest Pain Types</h2>
+            <p>Different types of chest pain can indicate various heart conditions, ranging from typical angina to non-cardiac pain. Understanding the type helps in diagnosis.</p>
+        </div>
+        <div class="factor">
+            <h2>4. Resting Blood Pressure</h2>
+            <p>High blood pressure strains the heart and blood vessels. Normal range is typically below 120/80 mmHg. Regular monitoring is essential.</p>
+        </div>
+        <div class="factor">
+            <h2>5. Cholesterol</h2>
+            <p>High cholesterol leads to arterial plaque buildup. Managing both LDL (bad) and HDL (good) cholesterol is key to heart health.</p>
+        </div>
+        <div class="factor">
+            <h2>6. Fasting Blood Sugar</h2>
+            <p>Elevated levels (>120 mg/dl) suggest diabetes risk. Diabetes significantly increases the likelihood of heart disease development.</p>
+        </div>
+        <div class="factor">
+            <h2>7. Resting ECG Results</h2>
+            <p>ECG readings show heart rhythm and potential abnormalities. Regular ECG tests help detect early signs of heart problems.</p>
+        </div>
+        <div class="factor">
+            <h2>8. Maximum Heart Rate</h2>
+            <p>Lower maximum heart rate during exercise may indicate cardiovascular issues. Age-related changes affect normal ranges.</p>
+        </div>
+        <div class="factor">
+            <h2>9. Exercise-Induced Angina</h2>
+            <p>Chest pain during physical activity suggests reduced blood flow to the heart. A key indicator of coronary artery disease.</p>
+        </div>
+        <div class="factor">
+            <h2>10. ST Depression</h2>
+            <p>ECG changes during exercise indicate potential heart stress. The degree of depression correlates with disease severity.</p>
+        </div>
+        <div class="factor">
+            <h2>11. ST Segment Slope</h2>
+            <p>The slope pattern during stress tests helps evaluate heart condition. Different patterns indicate varying levels of risk.</p>
+        </div>
+        <div class="factor">
+            <h2>12. Major Vessels</h2>
+            <p>Number of blocked major blood vessels affects heart disease severity. More blockages indicate higher risk levels.</p>
+        </div>
+    </div>
+
+    <div class="scroll-to-top" onclick="scrollToTop()">↑</div>
+
+    
+
+    <div class="chat-widget">
+        <button class="chat-button" onclick="toggleChat()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </button>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <h3>Heart Health Assistant</h3>
+                <button class="close-chat" onclick="toggleChat()">✕</button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Type your question..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show/hide scroll-to-top button
+        window.onscroll = function() {
+            const scrollBtn = document.querySelector('.scroll-to-top');
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollBtn.style.display = 'flex';
+            } else {
+                scrollBtn.style.display = 'none';
+            }
+        };
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Factor expansion function
+        function expandFactor(element) {
+            element.classList.toggle('expanded');
+            const factors = document.querySelectorAll('.factor');
+            factors.forEach(factor => {
+                if (factor !== element) {
+                    factor.classList.remove('expanded');
+                }
+            });
+        }
+
+        // Add animation delay to factors
+        document.addEventListener('DOMContentLoaded', function() {
+            const factors = document.querySelectorAll('.factor');
+            
+            factors.forEach((factor, index) => {
+                // Get the original description and title
+                const originalDesc = factor.querySelector('p').textContent;
+                const title = factor.querySelector('h2').textContent.replace(/^\d+\.\s+/, ''); // Remove numbering
+                
+                // Create short description
+                const shortDesc = originalDesc.slice(0, 100) + '...';
+                
+                // Create Google search URL
+                const searchQuery = `heart disease ${title.toLowerCase()}`;
+                const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+                
+                // Update HTML structure
+                factor.innerHTML = `
+                    <h2>${factor.querySelector('h2').textContent}</h2>
+                    <p class="description-short">${shortDesc}</p>
+                    <p class="description-full">${originalDesc}</p>
+                    <a href="${googleSearchUrl}" class="learn-more-btn" target="_blank">Learn more</a>
+                `;
+
+                // Add animation delay
+                factor.style.setProperty('--i', index + 1);
+                
+                // Optional: Add click handler for the entire card
+                factor.addEventListener('click', function(e) {
+                    // Only trigger if not clicking the learn more button
+                    if (!e.target.classList.contains('learn-more-btn')) {
+                        this.classList.toggle('expanded');
+                        
+                        // Close other expanded factors
+                        factors.forEach(f => {
+                            if (f !== this) f.classList.remove('expanded');
+                        });
+                        
+                        // Smooth scroll to this factor if expanded
+                        if (this.classList.contains('expanded')) {
+                            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }
+                });
+            });
+        });
+
+        // Add alert and prevention responses
+        const responses = {
+            "hi": "Hello! 👋 I'm your Heart Health Assistant. How can I help you today?",
+            
+            "blood pressure": "About Blood Pressure:\n\n" +
+                "• Normal: Below 120/80 mmHg\n" +
+                "• Elevated: 120-129/80 mmHg\n" +
+                "• High: 130/80 mmHg or higher\n\n" +
+                "Management Tips:\n" +
+                "• Reduce salt intake\n" +
+                "• Regular exercise\n" +
+                "• Stress management",
+                
+            "age": "Age and Heart Health:\n\n" +
+                "• Risk increases with age\n" +
+                "• Blood vessels become less flexible\n" +
+                "• Heart function changes over time\n" +
+                "• Regular check-ups become crucial\n\n" +
+                "Prevention becomes more important as you age!",
+
+            "gender": "Gender and Heart Disease:\n\n" +
+                "• Men face higher risks earlier in life\n" +
+                "• Women's risk increases after menopause\n" +
+                "• Different warning signs between genders\n" +
+                "• Both need heart-healthy lifestyles",
+
+            "chest pain": "Types of Chest Pain:\n\n" +
+                "• Typical angina\n" +
+                "• Atypical chest pain\n" +
+                "• Non-cardiac pain\n\n" +
+                "🚨 If experiencing severe chest pain, seek immediate medical help!",
+
+            "cholesterol": "About Cholesterol:\n\n" +
+                "• Normal total: Below 200 mg/dL\n" +
+                "• HDL (Good): Above 60 mg/dL\n" +
+                "• LDL (Bad): Below 100 mg/dL\n\n" +
+                "Management:\n" +
+                "• Healthy diet\n" +
+                "• Regular exercise\n" +
+                "• Medication if prescribed",
+
+            "blood sugar": "Blood Sugar Guidelines:\n\n" +
+                "• Normal fasting: Below 100 mg/dL\n" +
+                "• Prediabetes: 100-125 mg/dL\n" +
+                "• Diabetes: 126 mg/dL or higher\n\n" +
+                "High blood sugar increases heart disease risk",
+
+            "ecg": "ECG (Electrocardiogram):\n\n" +
+                "• Shows heart's electrical activity\n" +
+                "• Detects irregular rhythms\n" +
+                "• Identifies heart problems\n" +
+                "• Regular testing recommended",
+
+            "heart rate": "Heart Rate Information:\n\n" +
+                "• Normal resting: 60-100 beats/min\n" +
+                "• Athletic: Lower than average\n" +
+                "• Maximum rate varies with age\n" +
+                "• Regular monitoring important",
+
+            "angina": "Exercise-Induced Angina:\n\n" +
+                "• Chest pain during activity\n" +
+                "• Indicates reduced blood flow\n" +
+                "• Warning sign of heart disease\n" +
+                "• Requires medical attention",
+
+            "st depression": "ST Depression:\n\n" +
+                "• ECG change during stress\n" +
+                "• Indicates heart strain\n" +
+                "• Severity varies\n" +
+                "• Important diagnostic tool",
+
+            "vessels": "Major Blood Vessels:\n\n" +
+                "• Supply heart with blood\n" +
+                "• Can become blocked\n" +
+                "• More blockages = higher risk\n" +
+                "• Preventive care important",
+
+            "prevention strategies": "Heart Disease Prevention:\n\n" +
+                "Daily Habits:\n" +
+                "• Exercise 30 minutes\n" +
+                "• Heart-healthy diet\n" +
+                "• Maintain healthy weight\n" +
+                "• Get enough sleep\n\n" +
+                "Regular Checkups:\n" +
+                "• Blood pressure\n" +
+                "• Cholesterol levels\n" +
+                "• Blood sugar",
+                
+            "heart": "About Heart Health:\n\n" +
+                "• Pumps blood through body\n" +
+                "• Beats 100,000 times daily\n" +
+                "• Needs regular exercise\n" +
+                "• Affected by diet and lifestyle\n\n" +
+                "Ask me about specific factors!",
+                
+            "symptoms": "Heart Problem Warning Signs:\n\n" +
+                "⚠️ Chest pain or pressure\n" +
+                "⚠️ Shortness of breath\n" +
+                "⚠️ Irregular heartbeat\n" +
+                "⚠️ Unusual fatigue\n" +
+                "⚠️ Dizziness\n\n" +
+                "If severe, seek immediate medical help!",
+
+            "coronary": "Coronary Artery Disease:\n\n" +
+                "• Most common heart disease\n" +
+                "• Blocked or narrowed arteries\n" +
+                "• Can lead to heart attack\n" +
+                "• Treatable with lifestyle changes\n\n" +
+                "Risk Factors:\n" +
+                "• High blood pressure\n" +
+                "• High cholesterol\n" +
+                "• Smoking",
+
+            "arrhythmia": "Heart Arrhythmia:\n\n" +
+                "• Irregular heartbeat\n" +
+                "• Can be too fast or too slow\n" +
+                "• May need medical treatment\n" +
+                "• Common types: AFib, tachycardia\n\n" +
+                "Warning Signs:\n" +
+                "• Heart palpitations\n" +
+                "• Dizziness\n" +
+                "• Shortness of breath",
+
+            "heart failure": "Heart Failure:\n\n" +
+                "• Heart can't pump efficiently\n" +
+                "• Develops over time\n" +
+                "• Manageable condition\n" +
+                "• Requires medical care\n\n" +
+                "Symptoms:\n" +
+                "• Fatigue\n" +
+                "• Shortness of breath\n" +
+                "• Swelling in legs",
+
+            "valve": "Heart Valve Disease:\n\n" +
+                "• Affects heart valves\n" +
+                "• Can be present at birth\n" +
+                "• May develop with age\n" +
+                "• Various treatment options\n\n" +
+                "Types:\n" +
+                "• Stenosis\n" +
+                "• Regurgitation\n" +
+                "• Prolapse",
+
+            "cardiomyopathy": "Cardiomyopathy:\n\n" +
+                "• Disease of heart muscle\n" +
+                "• Can lead to heart failure\n" +
+                "• May be inherited\n" +
+                "• Different types exist\n\n" +
+                "Types:\n" +
+                "• Dilated\n" +
+                "• Hypertrophic\n" +
+                "• Restrictive",
+
+            "afib": "Atrial Fibrillation (AFib):\n\n" +
+                "• Irregular heartbeat\n" +
+                "• Increased stroke risk\n" +
+                "• Common in older adults\n" +
+                "• Treatable condition\n\n" +
+                "Symptoms:\n" +
+                "• Heart palpitations\n" +
+                "• Fatigue\n" +
+                "• Dizziness",
+
+            "heart attack": "About Heart Attack:\n\n" +
+                "🚨 If experiencing symptoms, call emergency services!\n\n" +
+                "Warning Signs:\n" +
+                "• Chest pain/pressure\n" +
+                "• Arm/jaw/back pain\n" +
+                "• Shortness of breath\n" +
+                "• Cold sweat\n" +
+                "• Nausea",
+
+            "disease": "Common Heart Diseases:\n\n" +
+                "1. Coronary Artery Disease\n" +
+                "2. Heart Arrhythmia\n" +
+                "3. Heart Failure\n" +
+                "4. Valve Disease\n" +
+                "5. Cardiomyopathy\n\n" +
+                "Which would you like to learn more about?",
+
+            "condition": "Heart Conditions Overview:\n\n" +
+                "Common conditions include:\n" +
+                "• Coronary Artery Disease\n" +
+                "• Arrhythmias\n" +
+                "• Heart Failure\n" +
+                "• Valve Problems\n" +
+                "• Cardiomyopathy\n\n" +
+                "Ask about any specific condition!",
+
+            // Add short forms and variations
+            "cad": "Coronary Artery Disease (CAD):\n\n" +
+                "• Most common heart disease\n" +
+                "• Blocked or narrowed arteries\n" +
+                "• Can lead to heart attack\n" +
+                "• Treatable with lifestyle changes",
+
+            "chf": "Congestive Heart Failure (CHF):\n\n" +
+                "• Heart can't pump efficiently\n" +
+                "• Develops over time\n" +
+                "• Manageable condition\n" +
+                "• Requires medical care",
+
+            "mi": "Myocardial Infarction (Heart Attack):\n\n" +
+                "🚨 EMERGENCY CONDITION 🚨\n" +
+                "Call emergency services if experiencing:\n" +
+                "• Chest pain/pressure\n" +
+                "• Arm/jaw/back pain\n" +
+                "• Shortness of breath",
+
+            "bp": "Blood Pressure (BP):\n\n" +
+                "• Normal: Below 120/80 mmHg\n" +
+                "• Elevated: 120-129/80 mmHg\n" +
+                "• High: 130/80 mmHg or higher",
+
+            "cp": "🚨 CHEST PAIN ALERT 🚨\n\n" +
+                "If you're experiencing chest pain:\n" +
+                "1. Call emergency services NOW\n" +
+                "2. Stay calm and seated\n" +
+                "3. Take prescribed medications\n" +
+                "4. Wait for medical help",
+
+            "alert": "Heart Disease Warning Signs:\n\n" +
+                "🚨 Emergency Signs:\n" +
+                "• Chest pain or pressure\n" +
+                "• Shortness of breath\n" +
+                "• Severe arm/jaw pain\n" +
+                "• Cold sweats\n" +
+                "• Sudden dizziness\n\n" +
+                "Type 'prevention' to learn how to reduce risks.",
+
+            "warning": "Heart Health Warnings:\n\n" +
+                "Watch for these signs:\n" +
+                "• Unexplained fatigue\n" +
+                "• Irregular heartbeat\n" +
+                "• Swelling in legs/ankles\n" +
+                "• Rapid/short breath\n" +
+                "• Chest discomfort\n\n" +
+                "Type 'prevention' for preventive measures.",
+
+            "prevention": "Heart Disease Prevention:\n\n" +
+                "Daily Habits:\n" +
+                "• 30 mins exercise\n" +
+                "• Heart-healthy diet\n" +
+                "• Stress management\n" +
+                "• Good sleep habits\n\n" +
+                "Regular Checks:\n" +
+                "• Blood pressure\n" +
+                "• Cholesterol\n" +
+                "• Blood sugar\n\n" +
+                "Lifestyle Changes:\n" +
+                "• Quit smoking\n" +
+                "• Limit alcohol\n" +
+                "• Maintain healthy weight",
+
+            "prevent": "Prevention Strategies:\n\n" +
+                "Immediate Steps:\n" +
+                "• Start walking daily\n" +
+                "• Reduce salt intake\n" +
+                "• Eat more vegetables\n" +
+                "• Quit smoking\n\n" +
+                "Long-term Actions:\n" +
+                "• Regular check-ups\n" +
+                "• Weight management\n" +
+                "• Stress reduction\n" +
+                "• Heart-healthy lifestyle"
+        };
+
+        // Improved message processing with specific chest pain type handling
+        function processUserMessage(message) {
+            const input = message.toLowerCase().trim();
+            
+            // Special handling for chest pain with type
+            if ((input.includes("chest pain") || input.includes("cp")) && 
+                (input.includes("type") || input.includes("types"))) {
+                return "Types of Chest Pain:\n\n" +
+                       "1. Angina:\n" +
+                       "• Pressure or squeezing feeling\n" +
+                       "• Triggered by physical activity\n" +
+                       "• Usually improves with rest\n" +
+                       "• May radiate to arms\n\n" +
+                       "2. Heart Attack Pain:\n" +
+                       "• Severe crushing sensation\n" +
+                       "• Lasts more than few minutes\n" +
+                       "• Doesn't improve with rest\n" +
+                       "• Often with other symptoms\n\n" +
+                       "3. Non-Cardiac Pain:\n" +
+                       "• Sharp or stabbing\n" +
+                       "• May be muscle-related\n" +
+                       "• Could be digestive\n" +
+                       "• Might be respiratory\n\n" +
+                       "🚨 IMPORTANT WARNING 🚨\n" +
+                       "If experiencing ANY chest pain,\n" +
+                       "seek immediate medical attention!";
+            }
+            
+            // Regular emergency check
+            if (isEmergencyQuery(input)) {
+                return formatEmergencyResponse(input);
+            }
+
+            // Rest of the keyword checks
+            for (const [key, response] of Object.entries(responses)) {
+                if (input.includes(key)) {
+                    return response;
+                }
+            }
+            
+            return getDefaultResponse();
+        }
+
+        // Emergency query detection
+        function isEmergencyQuery(input) {
+            const emergencyTerms = {
+                "chest": ["chest pain", "cp", "chest pressure", "chest discomfort"],
+                "breath": ["cant breathe", "difficulty breathing", "shortness of breath"],
+                "heart attack": ["heart attack", "cardiac arrest"],
+                "severe": ["severe pain", "intense pain", "extreme pain"]
+            };
+
+            for (const [category, terms] of Object.entries(emergencyTerms)) {
+                if (terms.some(term => input.includes(term))) {
+                    // Don't check for types unless it's chest pain
+                    if (category === "chest") {
+                        return !input.includes("type") && !input.includes("types");
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Format emergency response
+        function formatEmergencyResponse(input) {
+            let response = "🚨 EMERGENCY ALERT 🚨\n\n";
+            
+            if (input.includes("chest") || input.includes("cp")) {
+                response += "CHEST PAIN IS A SERIOUS EMERGENCY!\n\n" +
+                           "IMMEDIATE ACTIONS:\n" +
+                           "1. CALL EMERGENCY SERVICES NOW!\n" +
+                           "2. Stay calm and seated\n" +
+                           "3. Take prescribed medications\n" +
+                           "4. Keep your door unlocked\n" +
+                           "5. Wait for medical help\n\n" +
+                           "Type 'types of chest pain' for information\n" +
+                           "about different kinds of chest pain.";
+            } else if (input.includes("breath")) {
+                response += "BREATHING DIFFICULTY IS SERIOUS!\n\n" +
+                           "IMMEDIATE ACTIONS:\n" +
+                           "1. CALL EMERGENCY SERVICES NOW!\n" +
+                           "2. Sit upright and try to stay calm\n" +
+                           "3. Loosen any tight clothing\n" +
+                           "4. Use prescribed inhaler if you have one";
+            } else {
+                response += "SEEK IMMEDIATE MEDICAL ATTENTION!\n\n" +
+                           "1. CALL EMERGENCY SERVICES\n" +
+                           "2. Stay calm\n" +
+                           "3. Follow emergency operator instructions";
+            }
+            
+            return response;
+        }
+
+        // Default response
+        function getDefaultResponse() {
+            return "I can help with information about:\n\n" +
+                   "• Heart Diseases (CAD, CHF, AFib)\n" +
+                   "• Blood Pressure (BP)\n" +
+                   "• Chest Pain (CP)\n" +
+                   "• Prevention & Risk Factors\n" +
+                   "• Emergency Signs\n\n" +
+                   "What would you like to know about?";
+        }
+
+        // Add message to chat
+        function addMessage(content, isUser = false) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            
+            if (!isUser) {
+                // Show typing indicator
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'typing-indicator';
+                typingDiv.innerHTML = '<span></span><span></span><span></span>';
+                messagesContainer.appendChild(typingDiv);
+                
+                // Remove typing indicator and show message
+                setTimeout(() => {
+                    typingDiv.remove();
+                    messageDiv.textContent = content;
+                    messagesContainer.appendChild(messageDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1000);
+            } else {
+                messageDiv.textContent = content;
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage(message, true);
+                input.value = '';
+                
+                setTimeout(() => {
+                    const response = processUserMessage(message);
+                    addMessage(response);
+                }, 500);
+            }
+        }
+
+        // Handle Enter key
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // Toggle chat
+        function toggleChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.classList.toggle('active');
+            if (chatContainer.classList.contains('active')) {
+                document.getElementById('userInput').focus();
+            }
+        }
+
+        // Initialize chatbot
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                addMessage("Hi! 👋 I'm your Heart Health Assistant.\n\n" +
+                          "I can help you with:\n" +
+                          "• Heart Health\n" +
+                          "• Blood Pressure\n" +
+                          "• Prevention Strategies\n" +
+                          "• Warning Signs\n\n" +
+                          "What would you like to know about?");
+            }, 500);
+        });
+    </script>
+</body>
+</html>

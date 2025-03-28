@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #1e3a8a;
+            --background-color: #f0f7ff;
+            --card-background: #ffffff;
+            --border-radius: 12px;
+            --text-color: #1e293b;
+            --label-color: #475569;
+            --input-border: #cbd5e1;
+            --error-color: #dc2626;
+            --success-color: #059669;
+            --shadow: 0 4px 15px rgba(37, 99, 235, 0.1);
+            --gradient-start: #2563eb;
+            --gradient-end: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+            color: var(--text-color);
+            line-height: 1.5;
+            padding: 3rem 2rem;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #1e2276;
+            text-align: center;
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .form-group {
+            background: var(--card-background);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-group:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+        }
+
+        label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .field-description {
+            font-size: 0.875rem;
+            color: var(--label-color);
+            margin-bottom: 0.75rem;
+            opacity: 0.8;
+            
+        }
+
+        input[type="number"],
+        select {
+            width: 95%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--input-border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background-color: white;
+            color: var(--text-color);
+        }
+
+        input[type="number"]:hover,
+        select:hover {
+            border-color: var(--primary-color);
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            transform: translateY(-1px);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232563eb'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+
+        .button-container {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        button {
+            background: #1e2276;
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(30, 34, 118, 0.3);
+        }
+
+        button:hover {
+            background: #161a5c;
+            box-shadow: 0 6px 20px rgba(30, 34, 118, 0.4);
+        }
+
+        .error {
+            color: var(--error-color);
+            background-color: rgba(220, 38, 38, 0.1);
+            font-size: 0.875rem;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-container {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Result Card Styling */
+        .result-container {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .result-card {
+            background: var(--card-background);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .result-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1rem 0;
+            color: var(--primary-color);
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recommendation {
+            color: var(--label-color);
+            margin: 1rem 0;
+            background: rgba(37, 99, 235, 0.05);
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .new-prediction {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--gradient-start), var(--gradient-end));
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Form group focus state */
+        .form-group:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Loading state */
+        button.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        button.loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: button-loading-spinner 1s ease infinite;
+        }
+
+        @keyframes button-loading-spinner {
+            from {
+                transform: rotate(0turn);
+            }
+            to {
+                transform: rotate(1turn);
+            }
+        }
+
+        /* Input placeholder */
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Focus outline */
+        *:focus {
+            outline: none;
+        }
+
+        /* Button shine effect */
+        button::after {
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.2),
+                rgba(255, 255, 255, 0.05)
+            );
+        }
+
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .back-button:hover {
+            transform: translateX(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .dashboard-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: #1e2276;
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(30, 34, 118, 0.3);
+        }
+
+        .dashboard-button:hover {
+            background: #161a5c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 34, 118, 0.4);
+        }
+
+        .dashboard-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .download-button {
+            background: #1e2276;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-button:hover {
+            background: #161a5c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(30, 34, 118, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Heart Disease Prediction Form</h1>
+    
+    <form method="POST" action="" id="predictorForm">
+        {% csrf_token %}
+        <div class="form-container">
+            <div class="form-group">
+                <label for="age">Age</label>
+                <div class="field-description">Enter your age:</div>
+                <input type="number" id="age" name="age" required>
+                <div class="error" id="ageError">Please enter a valid age between 1 and 120</div>
+            </div>
+
+            <div class="form-group">
+                <label for="sex">Gender</label>
+                <div class="field-description">Select your gender:</div>
+                <select id="sex" name="sex" required>
+                    <option value="">Select gender</option>
+                    <option value="0">Female</option>
+                    <option value="1">Male</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="cp">Chest Pain Type</label>
+                <div class="field-description">Select type of chest pain:</div>
+                <select id="cp" name="cp" required>
+                    <option value="">Select type</option>
+                    <option value="0">Typical Angina</option>
+                    <option value="1">Atypical Angina</option>
+                    <option value="2">Non-Anginal Pain</option>
+                    <option value="3">Asymptomatic</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="trestbps">Resting Blood Pressure</label>
+                <div class="field-description">Enter resting blood pressure (mm Hg):</div>
+                <input type="number" id="trestbps" name="trestbps" required>
+                <div class="error" id="bpError">Please enter a valid blood pressure (60-200)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="chol">Cholesterol:</label>
+                <div class="field-description">Enter your cholesterol level (mg/dl):</div>
+                <input type="number" id="chol" name="chol" required>
+                <div class="error" id="cholError">Please enter a valid cholesterol level (100-600)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="thalach">Max Heart Rate:</label>
+                <div class="field-description">Enter your maximum heart rate:</div>
+                <input type="number" id="thalach" name="thalach" required>
+                <div class="error" id="heartRateError">Please enter a valid heart rate (60-220)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="oldpeak">ST Depression:</label>
+                <div class="field-description">Enter your ST depression value:</div>
+                <input type="number" step="0.1" id="oldpeak" name="oldpeak" required>
+                <div class="error" id="stError">Please enter a valid ST depression value (0-10)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="fbs">Fasting Blood Sugar > 120 mg/dl:</label>
+                <div class="field-description">Select if your fasting blood sugar is greater than 120 mg/dl:</div>
+                <select id="fbs" name="fbs" required>
+                    <option value="">Select option</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="exang">Exercise Induced Angina:</label>
+                <div class="field-description">Select if you have exercise-induced angina:</div>
+                <select id="exang" name="exang" required>
+                    <option value="">Select option</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="slope">Slope of Peak Exercise ST Segment:</label>
+                <div class="field-description">Select the slope of your peak exercise ST segment:</div>
+                <select id="slope" name="slope" required>
+                    <option value="">Select option</option>
+                    <option value="0">Upsloping</option>
+                    <option value="1">Flat</option>
+                    <option value="2">Downsloping</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ca">Number of Major Vessels:</label>
+                <div class="field-description">Enter the number of major vessels:</div>
+                <select id="ca" name="ca" required>
+                    <option value="">Select option</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="restecg">Resting ECG Results:</label>
+                <div class="field-description">Select your resting ECG results:</div>
+                <select id="restecg" name="restecg" required>
+                    <option value="">Select option</option>
+                    <option value="0">Normal</option>
+                    <option value="1">ST-T Wave Abnormality</option>
+                    <option value="2">Left Ventricular Hypertrophy</option>
+                </select>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" id="predictButton">Save and Predict</button>
+                <a href="{% url 'home' %}" class="dashboard-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </form>
+
+    {% if prediction is not None %}
+    <div class="result-container">
+        <div class="result-card {% if prediction == 1 %}high-risk{% else %}low-risk{% endif %}">
+            <h2>Prediction Result</h2>
+            <div class="result-text">
+                {% if prediction == 1 %}
+                <p>High Risk of Heart Disease</p>
+                <p class="recommendation">Please consult a healthcare professional for a thorough evaluation.</p>
+                {% else %}
+                <p>Low Risk of Heart Disease</p>
+                <p class="recommendation">Continue maintaining a healthy lifestyle!</p>
+                {% endif %}
+            </div>
+            <button onclick="downloadResults()" class="download-button">Download Report</button>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        document.getElementById('predictorForm').addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Age validation
+            const age = document.getElementById('age').value;
+            if (age < 1 || age > 120) {
+                document.getElementById('ageError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('ageError').style.display = 'none';
+            }
+
+            // Blood pressure validation
+            const bp = document.getElementById('trestbps').value;
+            if (bp < 60 || bp > 200) {
+                document.getElementById('bpError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('bpError').style.display = 'none';
+            }
+
+            // Cholesterol validation
+            const chol = document.getElementById('chol').value;
+            if (chol < 100 || chol > 600) {
+                document.getElementById('cholError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('cholError').style.display = 'none';
+            }
+
+            // Heart rate validation
+            const heartRate = document.getElementById('thalach').value;
+            if (heartRate < 60 || heartRate > 220) {
+                document.getElementById('heartRateError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('heartRateError').style.display = 'none';
+            }
+
+            // ST Depression validation
+            const st = document.getElementById('oldpeak').value;
+            if (st < 0 || st > 10) {
+                document.getElementById('stError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('stError').style.display = 'none';
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+
+            if (isValid) {
+                const button = this.querySelector('button[type="submit"]');
+                button.classList.add('loading');
+                button.textContent = 'Processing...';
+                
+                // Generate and download PDF after form submission
+                setTimeout(() => {
+                    generatePDFInvoice();
+                }, 1000);
+            }
+        });
+
+        function generatePDFInvoice() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add header
+            doc.setFontSize(20);
+            doc.setTextColor(30, 34, 118); // #1e2276
+            doc.text('Heart Disease Prediction Report', 105, 20, { align: 'center' });
+
+            // Add date
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 35);
+
+            // Add invoice number
+            const invoiceNumber = 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            doc.text(`Invoice Number: ${invoiceNumber}`, 20, 45);
+
+            // Get form data
+            const formData = {
+                'Age': document.getElementById('age').value,
+                'Gender': document.getElementById('sex').options[document.getElementById('sex').selectedIndex].text,
+                'Chest Pain Type': document.getElementById('cp').options[document.getElementById('cp').selectedIndex].text,
+                'Resting Blood Pressure': document.getElementById('trestbps').value + ' mm Hg',
+                'Cholesterol': document.getElementById('chol').value + ' mg/dl',
+                'Max Heart Rate': document.getElementById('thalach').value,
+                'ST Depression': document.getElementById('oldpeak').value,
+                'Fasting Blood Sugar': document.getElementById('fbs').options[document.getElementById('fbs').selectedIndex].text,
+                'Exercise Induced Angina': document.getElementById('exang').options[document.getElementById('exang').selectedIndex].text,
+                'Slope': document.getElementById('slope').options[document.getElementById('slope').selectedIndex].text,
+                'Number of Vessels': document.getElementById('ca').value,
+                'Resting ECG': document.getElementById('restecg').options[document.getElementById('restecg').selectedIndex].text
+            };
+
+            // Create table data
+            const tableData = Object.entries(formData).map(([key, value]) => [key, value]);
+
+            // Add table
+            doc.autoTable({
+                startY: 55,
+                head: [['Parameter', 'Value']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [30, 34, 118],
+                    textColor: [255, 255, 255]
+                },
+                styles: {
+                    fontSize: 10,
+                    cellPadding: 5
+                },
+                alternateRowStyles: {
+                    fillColor: [240, 247, 255]
+                }
+            });
+
+            // Add prediction result if available
+            const resultElement = document.querySelector('.result-text p');
+            if (resultElement) {
+                const yPos = doc.lastAutoTable.finalY + 20;
+                doc.setFontSize(14);
+                doc.setTextColor(30, 34, 118);
+                doc.text('Prediction Result:', 20, yPos);
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.text(resultElement.textContent, 20, yPos + 10);
+
+                // Add recommendation if available
+                const recommendationElement = document.querySelector('.recommendation');
+                if (recommendationElement) {
+                    doc.text(recommendationElement.textContent, 20, yPos + 20);
+                }
+            }
+
+            // Add footer
+            doc.setFontSize(10);
+            doc.setTextColor(128, 128, 128);
+            doc.text('This is an automatically generated report. Please consult with a healthcare professional for medical advice.', 105, 280, { align: 'center' });
+
+            // Save the PDF
+            doc.save(`heart-disease-prediction-${invoiceNumber}.pdf`);
+        }
+    </script>
+</body>
+</html>

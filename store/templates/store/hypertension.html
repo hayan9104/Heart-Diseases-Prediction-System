@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypertension Risk Score Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        header {
+            background-color: #b33b29;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #b33b29;
+        }
+
+        h3 {
+            color: #555;
+        }
+
+        p, ul {
+            line-height: 1.6;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #b33b29;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .image-grid img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 15px;
+            background-color: #b33b29;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #e63939;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #b33b29;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Hypertension Risk Details
+    </header>
+
+    <div class="container">
+        <!-- About Hypertension Section -->
+        <div class="section">
+            <h2>About Hypertension</h2>
+            <p>Hypertension, also known as high blood pressure, is a condition where the force of blood against the artery walls is consistently too high. It can lead to serious health issues such as heart disease, stroke, and kidney failure if left untreated.</p>
+        </div>
+
+        <!-- Risk Score Graph Section -->
+        <div class="section">
+            <h2>Risk Score Graph</h2>
+            <p>The graph below shows the historical and predicted hypertension risk scores based on past and future reports:</p>
+            <div class="chart-container">
+                <canvas id="riskScoreChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Disease Causes Section -->
+        <div class="section">
+            <h2>Causes of Hypertension</h2>
+            <ul>
+                <li>Unhealthy diet, including high salt intake</li>
+                <li>Lack of physical activity</li>
+                <li>Excessive alcohol and tobacco use</li>
+                <li>Stress and genetic factors</li>
+                <li>Underlying conditions such as diabetes or kidney disease</li>
+            </ul>
+        </div>
+
+        <!-- Photos About Disease and Cure -->
+        <div class="section">
+            <h2>Visual Information About Hypertension</h2>
+            <div class="image-grid">
+                <img src="https://via.placeholder.com/400x300?text=Effects+of+Hypertension" alt="Effects of Hypertension">
+                <img src="https://via.placeholder.com/400x300?text=Healthy+Diet+Tips" alt="Healthy Diet Tips">
+                <img src="https://via.placeholder.com/400x300?text=Exercise+for+Heart+Health" alt="Exercise for Heart Health">
+                <img src="https://via.placeholder.com/400x300?text=Medication+for+Hypertension" alt="Medication for Hypertension">
+            </div>
+        </div>
+
+        <!-- Prevention and Management Section -->
+        <div class="section">
+            <h2>Prevention and Management</h2>
+            <p>While hypertension can be managed, adopting a healthy lifestyle is key to preventing it:</p>
+            <ul>
+                <li>Maintain a balanced diet low in salt and high in fruits, vegetables, and whole grains</li>
+                <li>Engage in regular physical activity, such as 30 minutes of moderate exercise daily</li>
+                <li>Avoid smoking and limit alcohol consumption</li>
+                <li>Manage stress through relaxation techniques like meditation</li>
+                <li>Regularly monitor your blood pressure</li>
+            </ul>
+        </div>
+
+        <!-- Learn More Section -->
+        <div class="section">
+            <h2>Learn More</h2>
+            <p>Discover more about hypertension, its causes, and treatment options:</p>
+            <ul>
+                <li>
+                    <a href="https://www.who.int/news-room/fact-sheets/detail/hypertension" target="_blank">World Health Organization: Hypertension</a>
+                </li>
+                <li>
+                    <a href="https://www.cdc.gov/bloodpressure/index.htm" target="_blank">CDC: High Blood Pressure</a>
+                </li>
+                <li>
+                    <a href="https://www.heart.org/en/health-topics/high-blood-pressure" target="_blank">American Heart Association: High Blood Pressure</a>
+                </li>
+                <li>
+                    <a href="https://www.mayoclinic.org/diseases-conditions/high-blood-pressure/diagnosis-treatment/drc-20373417" target="_blank">Mayo Clinic: Hypertension Treatment</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Back to Dashboard Button -->
+        <a href="{% url 'user_page' %}" class="back-button">Back to Dashboard</a>
+
+    </div>
+
+    <footer>
+        © 2024 Heart Disease Prediction System
+    </footer>
+
+    <!-- Chart.js Script for Graph -->
+    <script>
+        const ctx = document.getElementById('riskScoreChart').getContext('2d');
+        const riskScoreChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan 2024', 'Mar 2024', 'May 2024', 'Jul 2024', 'Sep 2024', 'Nov 2024', 'Jan 2025'],
+                datasets: [{
+                    label: 'Hypertension Risk Score (%)',
+                    data: [50, 55, 53, 60, 58, 62, 65],
+                    backgroundColor: 'rgba(255, 77, 77, 0.2)',
+                    borderColor: '#ff4d4d',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Risk Score (%)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
