@@ -5,7 +5,7 @@ An AI-powered application designed to predict the likelihood of heart disease ba
 ## Features
 
 - **Machine Learning Models**: Implements algorithms such as Logistic Regression, Decision Trees, Random Forest, SVM, and K-Nearest Neighbors for accurate predictions.
-- **User-Friendly Interface**: Developed using Flask to provide an intuitive web interface for data input and result visualization.
+- **User-Friendly Interface**: Developed using Django to provide an intuitive web interface for data input and result visualization.
 - **Data Visualization**: Utilizes Matplotlib and Seaborn for comprehensive data analysis and visualization.
 
 ## Dataset
