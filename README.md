@@ -8,9 +8,7 @@ An AI-powered application designed to predict the likelihood of heart disease ba
 - **User-Friendly Interface**: Developed using Django to provide an intuitive web interface for data input and result visualization.
 - **Data Visualization**: Utilizes Matplotlib and Seaborn for comprehensive data analysis and visualization.
 
-## Dataset
 
-The system employs the [Heart Disease UCI dataset](https://www.kaggle.com/ronitf/heart-disease-uci), which comprises 76 attributes related to patient health. This project focuses on a subset of 14 key attributes, primarily from the Cleveland Clinic Foundation data.
 
 ## Installation
 
